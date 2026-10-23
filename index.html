@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IS2 สตูดิโอนักค้นคว้า</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: สตูดิโอสามห้อง — แถบเลือกห้องด้านบน, แต่ละห้องเป็นโต๊ะทำงาน (เครื่องมือซ้าย/ผลลัพธ์ขวา) บนกระดาษจดบันทึกแบบตาราง */
+:root{
+  --paper:#eef2f1; --sheet:#ffffff; --ink:#14313a; --mute:#5b7179; --line:#cfdcdc;
+  --teal:#0f7c78; --tealsoft:#d6efec; --mark:#ffd84d; --marksoft:#fff3bf; --coral:#e2574c; --okc:#1d8a4e;
+  --display:"Mitr","Anuphan",system-ui,sans-serif; --body:"Anuphan","Leelawadee UI",Tahoma,system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0e1c20;--sheet:#152a30;--ink:#e3eff0;--mute:#93aab0;--line:#2a454c;--teal:#4cc6be;--tealsoft:#173c3d;--mark:#f2c94c;--marksoft:#3b3418;--coral:#ff8a7e;--okc:#59d18e;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#0e1c20;--sheet:#152a30;--ink:#e3eff0;--mute:#93aab0;--line:#2a454c;--teal:#4cc6be;--tealsoft:#173c3d;--mark:#f2c94c;--marksoft:#3b3418;--coral:#ff8a7e;--okc:#59d18e;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--body);
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:28px 28px;background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--sheet)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.3;text-wrap:balance;margin:0}
+h2{font-size:1.5rem}h3{font-size:1.15rem}
+p{margin:0}
+.mark{background:linear-gradient(transparent 55%,var(--mark) 55%);padding:0 2px}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+
+/* แถบบน */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sheet);border-bottom:1px solid var(--line);margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px))) 0;padding:10px max(16px,env(safe-area-inset-left,0px))}
+.topin{display:flex;align-items:center;gap:14px;flex-wrap:wrap;max-width:1120px;margin:0 auto}
+.brand{font-family:var(--display);font-weight:600;display:flex;align-items:center;gap:8px;cursor:pointer;background:none;border:0;padding:0}
+.brand b{background:var(--ink);color:var(--sheet);border-radius:6px;padding:0 7px;font-family:var(--mono);font-size:13px}
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.nav button{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:5px 14px;cursor:pointer;font-size:15px}
+.nav button[aria-current="page"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.nav small{font-family:var(--mono);opacity:.7;margin-right:4px}
+
+/* หน้าแรก */
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:center;padding-block:40px 24px}
+.hero .eb{font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:var(--teal);text-transform:uppercase}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);margin:8px 0 12px}
+.hero p{color:var(--mute);max-width:56ch}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.idx{transform:rotate(-1.2deg);box-shadow:0 14px 30px rgba(20,49,58,.12);border-top:26px solid var(--teal);position:relative}
+.idx .lbl{position:absolute;top:-22px;left:14px;color:#fff;font-family:var(--mono);font-size:12px}
+.idx dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0}
+.idx dt{color:var(--mute);font-size:14px}.idx dd{margin:0;font-weight:600}
+.rooms{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:10px}
+.room{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:18px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:8px}
+.room:hover{border-color:var(--teal)}
+.room .no{font-family:var(--mono);font-size:13px;color:var(--teal)}
+.room h3{font-size:1.3rem}.room p{color:var(--mute);font-size:15px}
+.bar{height:8px;background:var(--tealsoft);border-radius:99px;overflow:hidden;margin-top:auto}.bar i{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .4s}
+.room .pc{font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums}
+.tl{margin-top:26px}
+.tlrow{display:grid;grid-template-columns:repeat(20,1fr);gap:3px;margin:12px 0 6px}
+.tlrow span{height:34px;border-radius:5px;display:grid;place-items:center;font-family:var(--mono);font-size:11px;color:#fff}
+.u1c{background:#0f7c78}.u2c{background:#2b5d8a}.u3c{background:#c4553f}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--mute)}.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.score{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.score div{border:1px dashed var(--line);border-radius:10px;padding:10px}.score b{font-family:var(--display);font-size:1.6rem;display:block;font-variant-numeric:tabular-nums}
+.score small{color:var(--mute)}
+
+/* ห้อง */
+.rhead{padding-block:30px 16px;display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap}
+.rhead .big{font-family:var(--mono);font-size:4rem;line-height:1;color:var(--teal);opacity:.9}
+.rhead p{color:var(--mute);max-width:62ch}
+.lo{background:var(--marksoft);border-radius:10px;padding:10px 14px;margin-top:8px;font-size:15px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 16px}
+.tabs button{border:0;background:transparent;border-bottom:3px solid transparent;padding:6px 10px;cursor:pointer;color:var(--mute);font-weight:600}
+.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--mark)}
+.tabs .h{font-family:var(--mono);font-size:12px;margin-right:4px}
+.desk{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.desk>*{min-width:0}
+.stack{display:flex;flex-direction:column;gap:14px}
+label.f{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:15px}
+label.f em{font-style:normal;font-weight:400;color:var(--mute);font-size:13.5px}
+.in,textarea{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:400}
+textarea{min-height:90px;resize:vertical;line-height:1.7}
+.btn{border:0;border-radius:10px;padding:9px 16px;background:var(--ink);color:var(--sheet);cursor:pointer;font-weight:600}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.tl2{background:var(--teal);color:#fff}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.note{font-size:14px;color:var(--mute)}
+.chip{display:inline-block;font-size:12.5px;border-radius:99px;padding:1px 10px;background:var(--tealsoft);color:var(--teal);font-weight:600}
+.ok{color:var(--okc)}.no{color:var(--coral)}
+.doc{background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:28px 30px;box-shadow:0 10px 26px rgba(20,49,58,.10);font-size:15px}
+.doc h4{font-family:var(--display);font-weight:500;margin:14px 0 4px;font-size:1.05rem}
+.doc ol,.doc ul{margin:4px 0;padding-left:22px}
+.cite{font-family:var(--mono);font-size:13.5px;background:var(--paper);border-radius:8px;padding:10px 12px;word-break:break-word;border-left:4px solid var(--teal)}
+.qz{display:grid;gap:10px}
+.qi{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--sheet)}
+.qi .opt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.qi button{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 10px;text-align:left;cursor:pointer}
+.qi button.r{border-color:var(--okc);background:var(--tealsoft)}.qi button.w{border-color:var(--coral)}
+.qi .why{font-size:14px;margin-top:6px;color:var(--mute)}
+.chk{display:flex;flex-direction:column;gap:6px}
+.chk label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--sheet);cursor:pointer}
+.chk input{margin-top:6px;accent-color:var(--teal)}
+.chk label:has(input:checked){background:var(--tealsoft)}
+.wc{display:grid;gap:8px}
+.wcr{display:grid;grid-template-columns:150px 1fr 90px;gap:10px;align-items:center;font-size:14px}
+.wcr .bar{margin:0}.wcr span:last-child{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:13px}
+.big-n{font-family:var(--display);font-size:2.4rem;font-variant-numeric:tabular-nums}
+.poster{aspect-ratio:1/1.414;max-width:100%;background:var(--sheet);border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;grid-template-rows:auto auto 1fr auto;gap:10px;box-shadow:0 12px 28px rgba(20,49,58,.12);overflow:hidden}
+.poster .pt{background:var(--ink);color:var(--sheet);border-radius:6px;padding:10px;text-align:center;font-family:var(--display);font-size:1.05rem;line-height:1.35}
+.poster .pa{text-align:center;font-size:12px;color:var(--mute)}
+.poster .pg{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-height:0}
+.poster .pb{border:1px solid var(--line);border-radius:6px;padding:8px;font-size:12px;overflow:hidden}
+.poster .pb b{display:block;font-family:var(--display);font-weight:500;color:var(--teal);font-size:12.5px}
+.poster .pf{font-size:11px;color:var(--mute);border-top:1px dashed var(--line);padding-top:6px}
+.timer{font-family:var(--mono);font-size:3.6rem;text-align:center;font-variant-numeric:tabular-nums;line-height:1.1}
+.cue{border-radius:12px;padding:14px;background:var(--marksoft);min-height:90px;font-size:1.05rem}
+.steps{display:flex;gap:6px;flex-wrap:wrap}.steps span{font-size:13px;border-radius:99px;padding:2px 10px;border:1px solid var(--line)}
+.steps span.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.aiwide{margin-top:16px;width:100%;border-style:dashed}
+.rules{width:100%;border-collapse:collapse;font-size:15px}.rules th,.rules td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}.rules th{background:var(--paper);font-family:var(--display);font-weight:500}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.pc2{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.pc2 pre{white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;background:var(--paper);border-radius:8px;padding:10px;margin:0;flex:1}
+.pc2 .u{font-family:var(--mono);font-size:12px;color:var(--teal)}
+.st{align-self:flex-start;font-size:12px;border-radius:99px;padding:1px 9px;font-weight:600;white-space:nowrap}.st.ready{background:var(--tealsoft);color:var(--teal)}.st.alpha{background:var(--marksoft);color:var(--ink)}.st.dev{background:var(--paper);color:var(--mute);border:1px solid var(--line)}
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.tool{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--sheet);display:flex;flex-direction:column;gap:4px}
+.tool a{color:var(--teal);font-weight:600}
+.log{width:100%;border-collapse:collapse;font-size:14px}.log th,.log td{border:1px solid var(--line);padding:6px;vertical-align:top}.log input,.log textarea{width:100%;border:0;background:transparent;min-height:0;padding:2px;font-size:14px}
+.tw2{overflow-x:auto}
+.aitip{border:1px dashed var(--teal);border-radius:10px;padding:8px 12px;font-size:14px;background:var(--tealsoft)}
+.aitip button{background:none;border:0;color:var(--teal);font-weight:700;cursor:pointer;padding:0;text-decoration:underline}
+footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;border-top:1px solid var(--line);padding-top:16px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--sheet);border-radius:99px;padding:8px 18px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20}
+.toast.on{opacity:1}
+@media(max-width:860px){.hero,.desk{grid-template-columns:1fr}.rooms{grid-template-columns:1fr}.score{grid-template-columns:1fr 1fr}.idx{transform:none}.nav{margin-left:0}.qi .opt{grid-template-columns:1fr}.wcr{grid-template-columns:110px 1fr 76px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="top"><div class="topin">
+  <button class="brand" id="toHome" type="button"><b>IS2</b> สตูดิโอนักค้นคว้า</button>
+  <nav class="nav" aria-label="ห้องเรียนรู้">
+    <button type="button" data-go="home">ภาพรวม</button>
+    <button type="button" data-go="u1"><small>01</small>โลกของรายงาน</button>
+    <button type="button" data-go="u2"><small>02</small>เรียงร้อยถ้อยคำ</button>
+    <button type="button" data-go="u3"><small>03</small>เล่าสู่กันฟัง</button>
+    <button type="button" data-go="ai"><small>+</small>AI และเครื่องมือ</button>
+  </nav>
+</div></header>
+
+<!-- ===== ภาพรวม ===== -->
+<main id="v-home">
+  <section class="hero">
+    <div>
+      <div class="eb">I20202 · การสื่อสารและการนำเสนอ · ม.2</div>
+      <h1>จากคำถามในใจ สู่<span class="mark">รายงาน</span>และเวทีนำเสนอ</h1>
+      <p>ภาคเรียนนี้เราจะเขียนรายงานเชิงวิชาการความยาวประมาณ 2,500 คำ จากเรื่องที่ศึกษาค้นคว้า แล้วนำเสนอด้วยโพสเตอร์และด้วยวาจา เว็บนี้คือโต๊ะทำงานที่ช่วยวางโครง เขียน ตรวจ อ้างอิง และซ้อมพูด งานที่พิมพ์ไว้จะจำอยู่ในเครื่องนี้</p>
+    </div>
+    <div class="card idx"><span class="lbl">บัตรรายวิชา</span>
+      <dl><dt>รหัสวิชา</dt><dd>I20202</dd><dt>ชื่อวิชา</dt><dd>การสื่อสารและการนำเสนอ (IS2)</dd><dt>ชั้น</dt><dd>มัธยมศึกษาปีที่ 2</dd><dt>ภาคเรียน</dt><dd>2 / 2569</dd><dt>เวลาเรียน</dt><dd>2 ชั่วโมง/สัปดาห์ · 40 ชั่วโมง</dd><dt>ครูผู้สอน</dt><dd>นายอชิตพล บุณรัตน์</dd></dl>
+    </div>
+  </section>
+  <div class="rooms">
+    <button class="room" type="button" data-go="u1"><span class="no">ห้อง 01 · 6 ชั่วโมง · สัปดาห์ 1–3</span><h3>โลกของรายงาน</h3><p>รู้จักรายงานเชิงวิชาการ ภาษาที่ใช้ และวางโครงร่างรายงานของกลุ่ม</p><div class="bar"><i id="p-u1"></i></div><span class="pc" id="t-u1"></span></button>
+    <button class="room" type="button" data-go="u2"><span class="no">ห้อง 02 · 20 ชั่วโมง · สัปดาห์ 4–13</span><h3>เรียงร้อยถ้อยคำ</h3><p>เขียนส่วนเนื้อหา ส่วนอ้างอิง ส่วนนำ แล้วตรวจสอบรายงานให้รอบด้าน</p><div class="bar"><i id="p-u2"></i></div><span class="pc" id="t-u2"></span></button>
+    <button class="room" type="button" data-go="u3"><span class="no">ห้อง 03 · 14 ชั่วโมง · สัปดาห์ 14–20</span><h3>เล่าสู่กันฟัง</h3><p>ออกแบบโพสเตอร์ ซ้อมนำเสนอด้วยวาจา และขึ้นเวทีไอเดีย</p><div class="bar"><i id="p-u3"></i></div><span class="pc" id="t-u3"></span></button>
+  </div>
+  <button class="room aiwide" type="button" data-go="ai"><span class="no">ใช้ได้ทุกหน่วย</span><h3>AI และเครื่องมือ</h3><p>คำสั่งสำเร็จรูปที่ให้ AI ช่วยคิดแต่ไม่ทำแทน บันทึกการใช้ AI การอ้างอิง AI และโปรแกรมที่ใช้ทำรายงานและโพสเตอร์</p></button>
+  <section class="card tl">
+    <h2>เส้นทาง 20 สัปดาห์</h2>
+    <div class="tlrow" aria-label="แผนรายสัปดาห์">
+      <span class="u1c">1</span><span class="u1c">2</span><span class="u1c">3</span><span class="u2c">4</span><span class="u2c">5</span><span class="u2c">6</span><span class="u2c">7</span><span class="u2c">8</span><span class="u2c">9</span><span class="u2c">10</span><span class="u2c">11</span><span class="u2c">12</span><span class="u2c">13</span><span class="u3c">14</span><span class="u3c">15</span><span class="u3c">16</span><span class="u3c">17</span><span class="u3c">18</span><span class="u3c">19</span><span class="u3c">20</span>
+    </div>
+    <div class="legend"><span><i class="u1c"></i>โลกของรายงาน</span><span><i class="u2c"></i>เรียงร้อยถ้อยคำ</span><span><i class="u3c"></i>เล่าสู่กันฟัง · สัปดาห์ 18–20 เวทีไอเดีย</span></div>
+    <h3 style="margin-top:18px">คะแนน 100</h3>
+    <div class="score"><div><b>15</b><small>โลกของรายงาน · โครงร่างรายงาน</small></div><div><b>40</b><small>เรียงร้อยถ้อยคำ · รายงาน 2,500 คำ</small></div><div><b>25</b><small>เล่าสู่กันฟัง · โพสเตอร์ การนำเสนอ</small></div><div><b>20</b><small>ปลายภาค · นำเสนอบนเวทีไอเดีย</small></div></div>
+  </section>
+</main>
+
+<!-- ===== ห้อง 1 ===== -->
+<main id="v-u1" hidden>
+  <div class="rhead"><span class="big">01</span><div><h2>โลกของรายงาน</h2><p>รายงานเชิงวิชาการคืองานเขียนที่เรียบเรียงจากการศึกษาค้นคว้าในเรื่องหนึ่งอย่างเป็นระบบ ทุกข้อความสำคัญมีหลักฐานและบอกแหล่งที่มาได้</p>
+  <div class="lo"><b>ผลการเรียนรู้ 1</b> วางโครงร่างการเขียนตามหลักเกณฑ์ องค์ประกอบ และวิธีการเขียนโครงร่าง</div></div></div>
+  <div class="tabs" role="tablist" data-room="u1">
+    <button role="tab" data-t="u1a"><span class="h">1.1</span>รายงานที่ดี</button>
+    <button role="tab" data-t="u1b"><span class="h">1.2</span>ภาษาในรายงาน</button>
+    <button role="tab" data-t="u1c"><span class="h">1.3</span>หาเรื่องที่ใช่</button>
+    <button role="tab" data-t="u1d"><span class="h">1.4</span>เขียนโครงร่าง</button>
+  </div>
+  <section id="u1a" class="desk" hidden>
+    <div class="stack">
+      <div class="card"><h3>รายงานที่ดีมีลักษณะอย่างไร</h3>
+      <div class="chk" id="goodRep" style="margin-top:10px">
+        <label><input type="checkbox" data-k="u1a1"><span><b>ตรงประเด็น</b> ทุกส่วนตอบคำถามหรือวัตถุประสงค์ที่ตั้งไว้</span></label>
+        <label><input type="checkbox" data-k="u1a2"><span><b>ข้อมูลถูกต้อง ตรวจสอบได้</b> มาจากแหล่งที่น่าเชื่อถือ และบอกที่มาทุกครั้ง</span></label>
+        <label><input type="checkbox" data-k="u1a3"><span><b>เรียบเรียงเป็นลำดับ</b> มีบท หัวข้อ และย่อหน้าที่ต่อเนื่องกัน</span></label>
+        <label><input type="checkbox" data-k="u1a4"><span><b>ใช้ภาษาแบบแผน</b> กระชับ ชัดเจน ไม่ใช้ภาษาพูดหรือคำแสลง</span></label>
+        <label><input type="checkbox" data-k="u1a5"><span><b>เขียนด้วยสำนวนของตนเอง</b> สรุปและเรียบเรียงใหม่ ไม่คัดลอกงานของผู้อื่น</span></label>
+      </div><p class="note" style="margin-top:8px">ติ๊กเมื่ออ่านและเข้าใจแต่ละข้อแล้ว</p></div>
+    </div>
+    <div class="doc"><h3>หน้าตาของรายงานเชิงวิชาการ</h3>
+      <h4>ส่วนนำ</h4><ul><li>ปก</li><li>คำนำ</li><li>สารบัญ</li></ul>
+      <h4>ส่วนเนื้อหา</h4><ol><li>บทที่ 1 บทนำ — ที่มาและความสำคัญ วัตถุประสงค์ ขอบเขต</li><li>บทที่ 2 เอกสารที่เกี่ยวข้อง — ความรู้ที่ค้นคว้ามา</li><li>บทที่ 3 วิธีดำเนินการศึกษา — ศึกษาจากอะไร อย่างไร</li><li>บทที่ 4 ผลการศึกษา — สิ่งที่ค้นพบ</li><li>บทที่ 5 สรุป อภิปรายผล และข้อเสนอแนะ</li></ol>
+      <h4>ส่วนอ้างอิง</h4><ul><li>เอกสารอ้างอิง (บรรณานุกรม)</li><li>ภาคผนวก</li></ul>
+    </div>
+  </section>
+  <section id="u1b" class="desk" hidden>
+    <div class="stack"><div class="card"><h3>ภาษาแบบไหนเหมาะกับรายงาน</h3><p class="note">เลือกประโยคที่เหมาะจะอยู่ในรายงานเชิงวิชาการ</p><div class="qz" id="langQ" style="margin-top:10px"></div><p id="langS" class="note" style="margin-top:8px"></p></div></div>
+    <div class="stack"><div class="card"><h3>ลองเปลี่ยนเป็นภาษาเขียน</h3><p class="note">ประโยคต้นฉบับเป็นภาษาพูด เขียนใหม่ให้เป็นภาษาแบบแผน แล้วกดดูแนวคำตอบ</p>
+      <p style="margin-top:10px" class="cite" id="rwSrc"></p>
+      <label class="f" style="margin-top:10px" for="rwIn">ประโยคของฉัน<textarea id="rwIn" class="in"></textarea></label>
+      <div class="row" style="margin-top:8px"><button class="btn" id="rwShow" type="button">ดูแนวคำตอบ</button><button class="btn alt" id="rwNext" type="button">ข้อต่อไป</button></div>
+      <p id="rwAns" class="note" hidden style="margin-top:8px"></p></div>
+      <div class="card"><h3>คำที่มักหลุดเข้ามาในรายงาน</h3><p class="note">วางข้อความของเรา ระบบจะไฮไลต์คำภาษาพูดที่พบบ่อย</p>
+      <textarea id="slangIn" style="margin-top:8px">นักเรียนส่วนใหญ่ชอบกินขนมหวานมาก ๆ เลย ซึ่งมันไม่ค่อยดีต่อสุขภาพเท่าไหร่</textarea><div id="slangOut" class="doc" style="margin-top:8px;padding:14px"></div></div></div>
+  </section>
+  <section id="u1c" class="desk" hidden>
+    <div class="card stack"><h3>จากเรื่องกว้าง สู่ประเด็นที่ศึกษาได้</h3><p class="aitip">คิดไม่ออก? <button type="button" data-ai="p1">ใช้คำสั่ง AI ช่วยแคบประเด็น</button></p>
+      <label class="f" for="nw1">เรื่องที่สนใจ (กว้าง)<em>เช่น ขยะ อาหาร เกม สุขภาพ</em><input id="nw1" class="in" data-s></label>
+      <label class="f" for="nw2">แคบลง: เกี่ยวกับใคร / ที่ไหน<em>เช่น ขยะพลาสติกในโรงเรียนของเรา</em><input id="nw2" class="in" data-s></label>
+      <label class="f" for="nw3">ประเด็นที่อยากรู้ (ตั้งเป็นคำถาม)<em>เช่น ขยะพลาสติกในโรงเรียนมาจากไหนมากที่สุด และลดได้อย่างไร</em><input id="nw3" class="in" data-s></label>
+    </div>
+    <div class="card"><h3>เรื่องนี้ใช่ไหม? ตรวจก่อนเลือก</h3>
+      <div class="chk" style="margin-top:10px" id="topicChk">
+        <label><input type="checkbox" data-k="tp1"><span>กลุ่มเราสนใจเรื่องนี้จริง ๆ</span></label>
+        <label><input type="checkbox" data-k="tp2"><span>หาข้อมูลได้จากแหล่งที่น่าเชื่อถืออย่างน้อย 3 แหล่ง</span></label>
+        <label><input type="checkbox" data-k="tp3"><span>ทำเสร็จได้ภายในภาคเรียนนี้</span></label>
+        <label><input type="checkbox" data-k="tp4"><span>แคบพอจะเขียนได้ลึก ไม่กว้างจนต้องเขียนทุกเรื่อง</span></label>
+        <label><input type="checkbox" data-k="tp5"><span>เป็นประโยชน์ต่อตนเอง โรงเรียน หรือชุมชน</span></label>
+      </div><p class="note" id="topicV" style="margin-top:8px"></p></div>
+  </section>
+  <section id="u1d" class="desk" hidden>
+    <div class="card stack"><h3>โครงร่างรายงานของกลุ่ม</h3>
+      <label class="f" for="o-title">ชื่อเรื่อง<input id="o-title" class="in" data-s></label>
+      <label class="f" for="o-mem">สมาชิกกลุ่ม<em>ชื่อ–สกุล เลขที่ คนละบรรทัด</em><textarea id="o-mem" data-s style="min-height:70px"></textarea></label>
+      <label class="f" for="o-why">ที่มาและความสำคัญ<em>เขียนสั้น ๆ 2–3 ประโยค ทำไมเรื่องนี้ควรศึกษา</em><textarea id="o-why" data-s></textarea></label>
+      <label class="f" for="o-obj">วัตถุประสงค์<em>ขึ้นต้นด้วย "เพื่อ…" อย่างน้อย 2 ข้อ คนละบรรทัด</em><textarea id="o-obj" data-s></textarea></label>
+      <label class="f" for="o-scope">ขอบเขตการศึกษา<em>ศึกษาเรื่องอะไร กับใคร ที่ไหน ช่วงเวลาใด</em><textarea id="o-scope" data-s style="min-height:70px"></textarea></label>
+      <label class="f" for="o-how">วิธีการศึกษา<em>อ่านเอกสาร สัมภาษณ์ สำรวจ สังเกต ทดลอง</em><textarea id="o-how" data-s style="min-height:70px"></textarea></label>
+      <label class="f" for="o-ch2">หัวข้อย่อยในบทที่ 2 ที่จะค้นคว้า<em>คนละบรรทัด</em><textarea id="o-ch2" data-s></textarea></label>
+      <label class="f" for="o-src">แหล่งข้อมูลที่จะใช้<em>อย่างน้อย 3 แหล่ง</em><textarea id="o-src" data-s style="min-height:70px"></textarea></label>
+    </div>
+    <div class="stack" style="position:sticky;top:80px"><div class="doc" id="olPrev"></div><div class="row"><button class="btn tl2" type="button" id="olCopy">คัดลอกโครงร่าง</button><span class="note">วางลง Word หรือ Google Docs ได้เลย</span></div><div class="card"><b>ตรวจโครงร่าง</b><div id="olCheck" class="note" style="margin-top:6px"></div></div></div>
+  </section>
+</main>
+
+<!-- ===== ห้อง 2 ===== -->
+<main id="v-u2" hidden>
+  <div class="rhead"><span class="big">02</span><div><h2>เรียงร้อยถ้อยคำ</h2><p>เขียนรายงานทีละส่วน เริ่มจากส่วนเนื้อหา ตามด้วยส่วนอ้างอิง แล้วจึงเขียนส่วนนำ เพราะคำนำและสารบัญเขียนได้ดีที่สุดเมื่อเนื้อหาเสร็จแล้ว</p>
+  <div class="lo"><b>ผลการเรียนรู้ 2</b> เขียนรายงานการศึกษาค้นคว้าเชิงวิชาการภาษาไทย ความยาวประมาณ 2,500 คำ</div></div></div>
+  <div class="tabs" role="tablist" data-room="u2">
+    <button role="tab" data-t="u2a"><span class="h">2.1</span>เขียนส่วนเนื้อหา</button>
+    <button role="tab" data-t="u2b"><span class="h">2.2</span>อ้างอิง</button>
+    <button role="tab" data-t="u2c"><span class="h">2.3</span>แหล่งข้อมูลน่าเชื่อถือไหม</button>
+    <button role="tab" data-t="u2d"><span class="h">2.4</span>ส่วนนำ</button>
+    <button role="tab" data-t="u2e"><span class="h">2.5</span>ตรวจสอบให้รอบด้าน</button>
+  </div>
+  <section id="u2a" class="desk" hidden>
+    <div class="card stack"><div class="row"><h3>ห้องเขียน</h3><select id="chSel" class="in" style="width:auto"></select></div>
+      <p class="note" id="chHint"></p><p class="aitip">เขียนเสร็จแล้ว <button type="button" data-ai="p4">ให้ AI ชี้คำภาษาพูดและคำผิด</button> (ไม่ให้ AI เขียนแทน)</p>
+      <textarea id="chText" style="min-height:340px"></textarea>
+      <div class="row"><span class="chip" id="chWc">0 คำ</span><button class="btn alt" type="button" id="chCopy">คัดลอกบทนี้</button><button class="btn tl2" type="button" id="allCopy">คัดลอกรายงานทั้งเล่ม</button></div>
+    </div>
+    <div class="stack" style="position:sticky;top:80px"><div class="card"><span class="note">รวมทั้งเล่ม</span><div class="big-n" id="totWc">0</div><span class="note">เป้าหมายประมาณ 2,500 คำ</span><div class="bar" style="margin-top:8px"><i id="totBar"></i></div></div>
+      <div class="card"><b>สัดส่วนแนะนำของแต่ละบท</b><div class="wc" id="wcList" style="margin-top:10px"></div><p class="note" style="margin-top:10px">นับคำด้วยการตัดคำภาษาไทยของเบราว์เซอร์ ตัวเลขอาจต่างจาก Word เล็กน้อย</p></div></div>
+  </section>
+  <section id="u2b" class="desk" hidden>
+    <div class="card stack"><h3>สร้างรายการอ้างอิง</h3><p class="note">รูปแบบ APA ฉบับที่ 7 ที่ใช้กันทั่วไปในรายงานภาษาไทย</p>
+      <div class="row" id="ctType"><button class="btn" data-ct="web" type="button">เว็บไซต์</button><button class="btn alt" data-ct="book" type="button">หนังสือ</button><button class="btn alt" data-ct="jour" type="button">บทความวารสาร</button><button class="btn alt" data-ct="int" type="button">สัมภาษณ์</button><button class="btn alt" data-ct="ai" type="button">AI</button></div>
+      <div id="ctForm" class="stack"></div>
+      <div class="row"><button class="btn tl2" type="button" id="ctAdd">เพิ่มเข้ารายการอ้างอิง</button></div>
+    </div>
+    <div class="stack"><div class="card"><b>ผลลัพธ์</b><p class="cite" id="ctOut" style="margin-top:8px"></p><p class="note" style="margin-top:8px">อ้างอิงในเนื้อหา: <span class="cite" id="ctIn" style="display:inline-block;padding:2px 8px"></span></p></div>
+      <div class="card"><div class="row"><b>เอกสารอ้างอิงของรายงาน</b><button class="btn alt" type="button" id="refCopy">คัดลอก</button></div><ol id="refList" class="note" style="margin-top:8px;padding-left:20px"></ol><p class="note">เรียงตามตัวอักษรของชื่อผู้แต่งให้อัตโนมัติ (ไทยก่อนอังกฤษ)</p></div>
+      <div class="card"><b>เขียนด้วยสำนวนของตนเอง</b><ol class="note" style="margin-top:6px;padding-left:20px"><li>อ่านต้นฉบับจนเข้าใจ แล้วปิดต้นฉบับ</li><li>เขียนใจความสำคัญด้วยคำของเรา</li><li>เปิดเทียบว่าความหมายยังถูกต้อง และไม่ได้ใช้ประโยคเดิม</li><li>ใส่การอ้างอิงในเนื้อหาทุกครั้ง แม้จะเขียนใหม่แล้ว</li></ol></div></div>
+  </section>
+  <section id="u2c" class="desk" hidden>
+    <div class="card stack"><h3>ตรวจแหล่งข้อมูลทีละแหล่ง</h3>
+      <label class="f" for="srcName">แหล่งข้อมูลที่ตรวจ<input id="srcName" class="in" placeholder="เช่น บทความเรื่องขยะพลาสติกจากเว็บไซต์กรมควบคุมมลพิษ"></label>
+      <div class="chk" id="srcChk"></div>
+    </div>
+    <div class="card"><h3>ผลการตรวจ</h3><div class="big-n" id="srcScore">0/5</div><p id="srcV" style="margin-top:6px"></p>
+      <p class="note" style="margin-top:12px">แหล่งที่มักน่าเชื่อถือ: หน่วยงานรัฐ (.go.th) สถาบันการศึกษา (.ac.th) วารสารวิชาการ หนังสือที่มีผู้แต่งชัดเจน<br>ต้องระวัง: โพสต์ที่ไม่มีผู้เขียน ข่าวที่ไม่บอกแหล่งข้อมูล โฆษณาขายสินค้า</p></div>
+  </section>
+  <section id="u2d" class="desk" hidden>
+    <div class="card stack"><h3>ส่วนนำ</h3>
+      <label class="f" for="cv-school">ปก: โรงเรียน<input id="cv-school" class="in" data-s value="โรงเรียนวังโพรงพิทยาคม"></label>
+      <label class="f" for="cv-teacher">ครูที่ปรึกษา / ครูผู้สอน<input id="cv-teacher" class="in" data-s value="นายอชิตพล บุณรัตน์"></label>
+      <label class="f" for="pf-text">คำนำ<em>บอกว่ารายงานนี้เป็นส่วนหนึ่งของวิชาอะไร ศึกษาเรื่องอะไร มีเนื้อหาอะไรบ้าง ขอบคุณใคร</em><textarea id="pf-text" data-s style="min-height:160px"></textarea></label>
+      <button class="btn alt" type="button" id="pfStart">ใส่ประโยคตั้งต้นให้</button>
+    </div>
+    <div class="stack"><div class="doc" id="cvPrev"></div><div class="doc" id="tocPrev"></div></div>
+  </section>
+  <section id="u2e" class="desk" hidden>
+    <div class="card"><h3>ตรวจสอบให้รอบด้าน</h3><p class="note">ตรวจเองก่อน แล้วให้เพื่อนอีกกลุ่มตรวจซ้ำ</p><div class="chk" id="revChk" style="margin-top:10px"></div></div>
+    <div class="stack"><div class="card"><span class="note">ผ่านแล้ว</span><div class="big-n" id="revN">0/12</div><div class="bar"><i id="revBar"></i></div></div>
+      <div class="card"><b>ตรวจอัตโนมัติจากห้องเขียน</b><div id="autoRev" class="note" style="margin-top:6px"></div></div></div>
+  </section>
+</main>
+
+<!-- ===== ห้อง 3 ===== -->
+<main id="v-u3" hidden>
+  <div class="rhead"><span class="big">03</span><div><h2>เล่าสู่กันฟัง</h2><p>เปลี่ยนรายงานหลายหน้าให้คนอื่นเข้าใจได้ในเวลาไม่กี่นาที ด้วยโพสเตอร์หนึ่งแผ่นและการพูดที่เตรียมมาดี</p>
+  <div class="lo"><b>ผลการเรียนรู้ 3–5</b> นำเสนอข้อค้นพบแบบเดี่ยว (Oral Individual Presentation) หรือกลุ่ม (Oral Panel Presentation) โดยใช้สื่ออย่างเหมาะสม เผยแพร่ผลงานสู่สาธารณะ และเห็นคุณค่าของการถ่ายทอดสิ่งที่เรียนรู้</div></div></div>
+  <div class="tabs" role="tablist" data-room="u3">
+    <button role="tab" data-t="u3a"><span class="h">3.1</span>ออกแบบโพสเตอร์</button>
+    <button role="tab" data-t="u3b"><span class="h">3.2</span>เตรียมบทพูด</button>
+    <button role="tab" data-t="u3c"><span class="h">3.3</span>ซ้อมจับเวลา</button>
+    <button role="tab" data-t="u3d"><span class="h">3.4</span>เวทีไอเดีย</button>
+  </div>
+  <section id="u3a" class="desk" hidden>
+    <div class="card stack"><h3>ร่างโพสเตอร์</h3><p class="note">โพสเตอร์ที่ดีอ่านจบใน 1 นาที ใช้คำน้อย ภาพหรือกราฟช่วยเล่า</p>
+      <label class="f" for="ps-t">ชื่อเรื่อง<input id="ps-t" class="in" data-s></label>
+      <label class="f" for="ps-a">ผู้จัดทำ<input id="ps-a" class="in" data-s></label>
+      <label class="f" for="ps-1">ทำไมต้องศึกษา<em>ไม่เกิน 40 คำ</em><textarea id="ps-1" data-s style="min-height:70px"></textarea></label>
+      <label class="f" for="ps-2">วิธีการศึกษา<em>ไม่เกิน 40 คำ</em><textarea id="ps-2" data-s style="min-height:70px"></textarea></label>
+      <label class="f" for="ps-3">สิ่งที่ค้นพบ<em>2–3 ข้อ ข้อละบรรทัด ใส่ตัวเลขถ้ามี</em><textarea id="ps-3" data-s style="min-height:80px"></textarea></label>
+      <label class="f" for="ps-4">ข้อสรุปและข้อเสนอแนะ<em>ไม่เกิน 40 คำ</em><textarea id="ps-4" data-s style="min-height:70px"></textarea></label>
+      <label class="f" for="ps-5">ภาพหรือกราฟที่จะใช้<em>บรรยายว่าจะใส่ภาพอะไร</em><input id="ps-5" class="in" data-s></label>
+    </div>
+    <div class="stack" style="position:sticky;top:80px"><div class="poster" id="pst"></div><p class="note" id="pstWarn"></p></div>
+  </section>
+  <section id="u3b" class="desk" hidden>
+    <div class="card stack"><h3>บทพูด 3 ช่วง</h3><p class="aitip"><button type="button" data-ai="p7">ให้ AI สวมบทผู้ฟังถามคำถาม</button> แล้วจดคำถามที่ตอบยากไว้ในช่องด้านล่าง</p>
+      <label class="f" for="sp-o">เปิด (30 วินาที)<em>ทักทาย แนะนำตัว แล้วดึงความสนใจด้วยคำถามหรือข้อมูลที่น่าแปลกใจ</em><textarea id="sp-o" data-s></textarea></label>
+      <label class="f" for="sp-b">เนื้อหา (2–3 นาที)<em>ที่มา วิธีศึกษา สิ่งที่ค้นพบ เล่าเรียงลำดับ ชี้ไปที่โพสเตอร์หรือสไลด์</em><textarea id="sp-b" data-s style="min-height:140px"></textarea></label>
+      <label class="f" for="sp-c">ปิด (30 วินาที)<em>สรุปข้อค้นพบสำคัญ 1 ประโยค ข้อเสนอแนะ และขอบคุณ</em><textarea id="sp-c" data-s></textarea></label>
+      <label class="f" for="sp-q">คำถามที่ผู้ฟังอาจถาม และคำตอบที่เตรียมไว้<textarea id="sp-q" data-s></textarea></label>
+      <label class="f" for="sp-who">แบ่งหน้าที่ (ถ้านำเสนอเป็นกลุ่ม)<textarea id="sp-who" data-s style="min-height:70px"></textarea></label>
+    </div>
+    <div class="stack"><div class="card"><b>เวลาโดยประมาณ</b><div class="big-n" id="spTime">0:00</div><p class="note">คิดจากความเร็วพูดประมาณ 120 คำต่อนาที</p></div>
+      <div class="card"><b>เคล็ดลับการพูด</b><ul class="note" style="margin:6px 0 0;padding-left:20px"><li>มองผู้ฟังให้ทั่วห้อง ไม่ก้มอ่านกระดาษ</li><li>พูดช้ากว่าปกติเล็กน้อย เว้นจังหวะหลังตัวเลขสำคัญ</li><li>ใช้มือชี้ภาพหรือกราฟที่กำลังพูดถึง</li><li>ถ้าตอบคำถามไม่ได้ ให้ขอบคุณและรับไปค้นคว้าต่อ</li></ul></div></div>
+  </section>
+  <section id="u3c" class="desk" hidden>
+    <div class="card stack"><h3>ซ้อมจับเวลา</h3>
+      <div class="row"><label class="f" for="tmMin" style="flex-direction:row;align-items:center;gap:8px">เวลาที่กำหนด<select id="tmMin" class="in" style="width:auto"><option value="3">3 นาที</option><option value="5" selected>5 นาที</option><option value="7">7 นาที</option><option value="10">10 นาที</option></select></label></div>
+      <div class="timer" id="tmT">5:00</div>
+      <div class="steps" id="tmS"><span>เปิด</span><span>เนื้อหา</span><span>ปิด</span></div>
+      <div class="row"><button class="btn tl2" type="button" id="tmGo">เริ่ม</button><button class="btn alt" type="button" id="tmReset">เริ่มใหม่</button></div>
+      <div class="cue" id="tmCue">กดเริ่มแล้วการ์ดช่วยจำจะเปลี่ยนตามช่วงเวลา</div>
+    </div>
+    <div class="card"><h3>ประเมินการซ้อมของตนเอง</h3><div class="chk" id="spkChk" style="margin-top:10px"></div></div>
+  </section>
+  <section id="u3d" class="desk" hidden>
+    <div class="card stack"><h3>เวทีไอเดีย เปิดโลกงานค้นคว้า</h3><p>สัปดาห์ที่ 18–20 ทุกกลุ่มนำเสนอผลงานต่อเพื่อน ครู และผู้ฟังจากภายนอก ใช้เป็นคะแนนปลายภาค 20 คะแนน</p>
+      <div class="doc" style="padding:16px"><h4 style="margin-top:0">เกณฑ์ปลายภาค 20 คะแนน</h4><ul><li>เนื้อหาและข้อค้นพบถูกต้อง มีการอ้างอิงแหล่งข้อมูลที่น่าเชื่อถือ <b>8</b></li><li>สื่อประกอบการนำเสนอเหมาะสมและน่าสนใจ <b>4</b></li><li>การพูดนำเสนอและการตอบคำถาม <b>6</b></li><li>การเผยแพร่ผลงานสู่สาธารณะ <b>2</b></li></ul></div>
+    </div>
+    <div class="card stack"><h3>เผยแพร่ผลงานสู่สาธารณะ</h3><p class="note">เลือกอย่างน้อย 1 ช่องทาง แล้วจดหลักฐานไว้ส่งครู</p>
+      <div class="chk" id="pubChk"></div>
+      <label class="f" for="pub-ev">หลักฐานการเผยแพร่<em>ลิงก์โพสต์ วันที่จัดแสดง หรือชื่อผู้ที่ได้รับฟัง</em><textarea id="pub-ev" data-s style="min-height:70px"></textarea></label>
+      <label class="f" for="pub-ref">สะท้อนคิด: การถ่ายทอดสิ่งที่เรียนรู้ให้ผู้อื่นมีคุณค่าอย่างไร<textarea id="pub-ref" data-s></textarea></label>
+    </div>
+  </section>
+</main>
+
+<!-- ===== AI และเครื่องมือ ===== -->
+<main id="v-ai" hidden>
+  <div class="rhead"><span class="big">AI</span><div><h2>ใช้ AI อย่างนักค้นคว้า</h2><p>AI เป็นผู้ช่วยคิด ช่วยถาม และช่วยตรวจได้ดี แต่รายงานต้องเป็นความคิดและสำนวนของเรา และข้อมูลทุกชิ้นต้องตรวจกับแหล่งจริง</p>
+  <div class="lo"><b>กติกา 3 ข้อ</b> 1) AI ไม่เขียนแทนเรา 2) ทุกข้อมูลที่ได้จาก AI ต้องตรวจกับแหล่งที่น่าเชื่อถือก่อนใช้ 3) ใช้ AI ตรงไหน บันทึกและบอกครูทุกครั้ง</div></div></div>
+  <div class="tabs" role="tablist" data-room="ai">
+    <button role="tab" data-t="aia"><span class="h">A</span>ใช้ได้ / ไม่ควรใช้</button>
+    <button role="tab" data-t="aib"><span class="h">B</span>คำสั่งสำเร็จรูป</button>
+    <button role="tab" data-t="aic"><span class="h">C</span>บันทึกการใช้ AI</button>
+    <button role="tab" data-t="aid"><span class="h">D</span>โปรแกรมที่ใช้</button>
+  </div>
+  <section id="aia" hidden>
+    <div class="card tw2"><table class="rules"><tr><th>หน่วย</th><th>ให้ AI ช่วยได้</th><th>ไม่ควรให้ AI ทำ</th></tr>
+    <tr><td>01 โลกของรายงาน</td><td>ระดมความคิดหัวข้อ ช่วยแคบประเด็น ตั้งคำถาม ตรวจว่าวัตถุประสงค์ชัดเจนไหม</td><td>เลือกเรื่องแทนกลุ่ม เขียนโครงร่างทั้งหมดให้</td></tr>
+    <tr><td>02 เรียงร้อยถ้อยคำ</td><td>อธิบายเนื้อหาที่อ่านแล้วไม่เข้าใจ ชี้คำภาษาพูดและคำสะกดผิด แนะนำคำค้นหา</td><td>เขียนเนื้อหาแทน คัดลอกคำตอบ AI ไปวางในรายงาน ใช้ข้อมูลหรือแหล่งอ้างอิงจาก AI โดยไม่ตรวจ</td></tr>
+    <tr><td>03 เล่าสู่กันฟัง</td><td>สวมบทผู้ฟังแล้วถามคำถามให้ซ้อมตอบ ช่วยย่อข้อความโพสเตอร์ให้สั้นลง ให้ความเห็นต่อบทพูด</td><td>เขียนบทพูดทั้งหมดให้ ใช้ภาพที่ AI สร้างโดยไม่บอกที่มา</td></tr></table></div>
+    <div class="card" style="margin-top:14px"><h3>ทำไม AI ถึงต้องตรวจ</h3><ul style="margin:6px 0 0;padding-left:20px"><li>AI ตอบได้คล่องแม้ข้อมูลผิด บางครั้งแต่งตัวเลข ชื่อหนังสือ หรือลิงก์ที่ไม่มีอยู่จริงขึ้นมา</li><li>AI ไม่รู้ข้อมูลของโรงเรียนและชุมชนเรา ข้อมูลจริงได้จากการสำรวจ สัมภาษณ์ และสังเกตด้วยตัวเอง</li><li>ถ้า AI ให้ชื่อแหล่งข้อมูล ให้ค้นหาและเปิดอ่านแหล่งนั้นจริงก่อน แล้วอ้างอิงแหล่งนั้น ไม่อ้างอิง AI แทน</li></ul></div>
+  </section>
+  <section id="aib" hidden>
+    <p class="note" style="margin-bottom:10px">กดคัดลอกแล้ววางในแชต AI ที่ใช้ แก้ข้อความใน [วงเล็บ] เป็นเรื่องของกลุ่ม คำสั่งทุกข้อสั่งให้ AI ถามและชี้แนะ ไม่ใช่เขียนแทน</p>
+    <div class="pgrid" id="pgrid"></div>
+  </section>
+  <section id="aic" class="stack" hidden>
+    <div class="card stack"><div class="row"><h3>บันทึกการใช้ AI ของกลุ่ม</h3><button class="btn alt" type="button" id="logAdd">+ เพิ่มรายการ</button><button class="btn tl2" type="button" id="logCopy">คัดลอกเป็นภาคผนวก</button></div>
+      <p class="note">ใส่ในภาคผนวกของรายงาน เป็นหลักฐานว่าใช้ AI อย่างซื่อสัตย์</p>
+      <div class="tw2"><table class="log" id="logT"></table></div></div>
+    <div class="card"><h3>อ้างอิงเมื่อใช้ AI (APA 7)</h3><p class="note">ใช้เมื่อยกข้อความจาก AI มาแสดงในรายงานจริง ๆ เช่น ในภาคผนวก หรือเมื่อศึกษาเรื่องคำตอบของ AI เอง</p>
+      <p class="cite" style="margin-top:8px">ชื่อบริษัทผู้พัฒนา. (ปี ค.ศ.). <i>ชื่อโปรแกรม</i> (รุ่นหรือวันที่ใช้) [โมเดลภาษาขนาดใหญ่]. URL</p>
+      <p class="note" style="margin-top:8px">ตัวอย่าง: <span class="cite" style="display:inline-block;padding:2px 8px">Google. (2026). <i>Gemini</i> (23 ตุลาคม 2569) [โมเดลภาษาขนาดใหญ่]. https://gemini.google.com</span><br>อ้างอิงในเนื้อหา: (Google, 2026) · สร้างรายการนี้ได้ที่ห้อง 02 › อ้างอิง › AI</p></div>
+  </section>
+  <section id="aid" class="stack" hidden>
+    <div class="card"><h3>โปรแกรมหลักที่แนะนำ</h3><div class="tools" style="margin-top:10px">
+      <div class="tool"><b>Microsoft Word / Google Docs</b><span class="note">พิมพ์รายงาน ทำสารบัญอัตโนมัติ ตรวจคำสะกด รองรับภาษาไทยดี Google Docs ทำงานร่วมกันในกลุ่มได้พร้อมกัน</span><span class="st ready">ใช้ได้ทันที</span></div>
+      <div class="tool"><b>Canva</b><span class="note">ออกแบบโพสเตอร์และสไลด์ มีแม่แบบและฟอนต์ไทย</span><span class="st ready">ใช้ได้ทันที</span></div>
+      <div class="tool"><b>Google Forms</b><span class="note">ทำแบบสอบถามเก็บข้อมูลสำหรับบทที่ 3–4 และสรุปเป็นกราฟให้</span><span class="st ready">ใช้ได้ทันที</span></div>
+    </div></div>
+    <div class="card"><h3>เครื่องมือโอเพนซอร์สที่น่าลอง: ArtCraft</h3><p class="note">ชุดโปรแกรมฟรีและเปิดเผยซอร์สโค้ด ใช้ได้บน Windows, macOS, Linux และบางตัวบนเว็บ ทุกตัวยังเป็นรุ่นทดลองหรือกำลังพัฒนา ห้ามใช้เป็นโปรแกรมเดียวสำหรับงานที่ต้องส่ง สำรองไฟล์ไว้ใน Word หรือ Google Docs ด้วยเสมอ (สถานะตามหน้าเว็บ ArtCraft ณ ต.ค. 2569)</p>
+      <div class="tools" style="margin-top:10px">
+      <div class="tool"><a href="https://getartcraft.com/apps/wordcraft" target="_blank" rel="noopener">WordCraft ↗</a><span class="note">โปรแกรมพิมพ์เอกสาร เปิด/บันทึก .docx ได้ มีสารบัญ เชิงอรรถ และบรรณานุกรม APA ยังไม่ระบุว่ารองรับภาษาไทย ลองพิมพ์ไทยก่อนใช้</span><span class="st dev">กำลังพัฒนา · รุ่น 0.8</span></div>
+      <div class="tool"><a href="https://getartcraft.com/apps" target="_blank" rel="noopener">PdfCraft ↗</a><span class="note">อ่าน รวม แยกไฟล์ PDF เหมาะกับรวมเล่มรายงานก่อนส่ง</span><span class="st alpha">รุ่นทดลองแรก (Early alpha)</span></div>
+      <div class="tool"><a href="https://getartcraft.com/apps" target="_blank" rel="noopener">PhotoCraft ↗</a><span class="note">แต่งรูปสำหรับโพสเตอร์ ครอบตัด ปรับแสง</span><span class="st alpha">รุ่นทดลองแรก (Early alpha)</span></div>
+      <div class="tool"><a href="https://getartcraft.com/apps" target="_blank" rel="noopener">DesignCraft ↗</a><span class="note">จัดหน้าสิ่งพิมพ์ เช่น โพสเตอร์</span><span class="st dev">กำลังพัฒนา</span></div>
+      <div class="tool"><a href="https://getartcraft.com/apps" target="_blank" rel="noopener">DeckCraft ↗</a><span class="note">ทำสไลด์นำเสนอ</span><span class="st dev">กำลังพัฒนา</span></div>
+      <div class="tool"><a href="https://getartcraft.com/apps" target="_blank" rel="noopener">GridCraft ↗</a><span class="note">ตารางคำนวณ สรุปข้อมูลแบบสอบถาม</span><span class="st dev">กำลังพัฒนา</span></div>
+      </div></div>
+  </section>
+</main>
+
+<footer><span>รายวิชา I20202 การสื่อสารและการนำเสนอ (IS2) · โรงเรียนวังโพรงพิทยาคม</span><span>ครูคุ้ม อชิตพล บุณรัตน์ · <a href="https://mathdevth.github.io/" style="color:inherit">mathdevth.github.io</a></span></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S={};try{S=JSON.parse(localStorage.getItem('is2studio')||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem('is2studio',JSON.stringify(S))}catch(e){}};
+const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1800)};
+async function copy(text,html){try{if(html&&window.ClipboardItem){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})])}else await navigator.clipboard.writeText(text);toast('คัดลอกแล้ว')}
+ catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('คัดลอกแล้ว')}catch(_){toast('คัดลอกไม่ได้ ลองเลือกข้อความเอง')}t.remove()}}
+const seg=window.Intl&&Intl.Segmenter?new Intl.Segmenter('th',{granularity:'word'}):null;
+const wc=t=>{t=(t||'').trim();if(!t)return 0;if(seg){let n=0;for(const s of seg.segment(t))if(s.isWordLike)n++;return n}return t.split(/\s+/).length};
+const lines=t=>(t||'').split('\n').map(x=>x.trim()).filter(Boolean);
+
+/* ---------- นำทาง ---------- */
+const VIEWS=['home','u1','u2','u3','ai'];
+function go(v,tab){if(!VIEWS.includes(v))v='home';VIEWS.forEach(x=>$('v-'+x).hidden=x!==v);
+ $$('.nav button').forEach(b=>b.dataset.go===v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));
+ if(v!=='home'){const room=$$(`.tabs[data-room="${v}"]`)[0];const t=tab||S['tab_'+v]||room.querySelector('button').dataset.t;openTab(v,t)}
+ S.view=v;save();try{history.replaceState(null,'','#'+(v==='home'?'top':v))}catch(e){}if(v==='home')progress();try{scrollTo(0,0)}catch(e){}}
+function openTab(v,t){const room=$$(`.tabs[data-room="${v}"]`)[0];$$('button',room).forEach(b=>{const on=b.dataset.t===t;b.setAttribute('aria-selected',on);$(b.dataset.t).hidden=!on});S['tab_'+v]=t;save();refresh()}
+$$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));$('toHome').onclick=()=>go('home');
+$$('.tabs').forEach(r=>$$('button',r).forEach(b=>b.onclick=()=>openTab(r.dataset.room,b.dataset.t)));
+
+/* ---------- ช่องกรอกที่จำค่า ---------- */
+$$('[data-s]').forEach(e=>{if(S[e.id]!=null)e.value=S[e.id];e.addEventListener('input',()=>{S[e.id]=e.value;save();refresh()})});
+function bindChk(root){$$('input[type=checkbox]',root).forEach(c=>{c.checked=!!S[c.dataset.k];c.onchange=()=>{S[c.dataset.k]=c.checked;save();refresh()}})}
+function mkChk(id,arr,pre){$(id).innerHTML=arr.map((t,i)=>`<label><input type="checkbox" data-k="${pre}${i}"><span>${t}</span></label>`).join('');bindChk($(id))}
+bindChk($('goodRep'));bindChk($('topicChk'));
+
+/* ---------- 1.2 ภาษา ---------- */
+const LQ=[
+ ['วัยรุ่นสมัยนี้ติดโซเชียลกันหนักมาก','จากการสำรวจนักเรียนชั้น ม.2 จำนวน 60 คน พบว่าร้อยละ 70 ใช้สื่อสังคมออนไลน์มากกว่าวันละ 3 ชั่วโมง',1,'ประโยคที่สองบอกกลุ่มตัวอย่างและตัวเลข ตรวจสอบได้ ส่วนประโยคแรกเป็นความรู้สึกและใช้ภาษาพูด'],
+ ['ผู้ศึกษาได้สัมภาษณ์แม่ค้าในตลาดจำนวน 5 คน','พวกเราไปคุยกับแม่ค้ามาหลายคนเลย',0,'ใช้ "ผู้ศึกษา" แทน "พวกเรา" และระบุจำนวนชัดเจน'],
+ ['ขยะพลาสติกเยอะมาก ๆ จนน่าตกใจ','ปริมาณขยะพลาสติกในโรงเรียนเพิ่มขึ้นจาก 12 กิโลกรัมเป็น 18 กิโลกรัมต่อสัปดาห์',1,'คำว่า "เยอะมาก ๆ" เป็นภาษาพูดและไม่บอกปริมาณจริง'],
+ ['การนอนหลับไม่เพียงพอส่งผลต่อสมาธิในการเรียน','นอนน้อยแล้วเรียนไม่รู้เรื่องอะ',0,'ภาษาแบบแผนไม่มีคำลงท้ายอย่าง "อะ" "นะ" "จ้า"'],
+ ['ผมคิดว่าน้ำอัดลมไม่ดีเลย','น้ำอัดลม 1 กระป๋องมีน้ำตาลประมาณ 8 ช้อนชา ซึ่งเกินปริมาณที่ควรได้รับต่อวันสำหรับเด็ก',1,'รายงานไม่ใช้สรรพนามบุรุษที่ 1 อย่าง "ผม" "หนู" และให้หลักฐานแทนความคิดเห็น']];
+function langQ(){$('langQ').innerHTML=LQ.map((q,i)=>`<div class="qi" data-i="${i}"><div class="opt"><button type="button" data-o="0">${q[0]}</button><button type="button" data-o="1">${q[1]}</button></div><p class="why" hidden>${q[3]}</p></div>`).join('');
+ $$('#langQ .qi').forEach(d=>$$('button',d).forEach(b=>b.onclick=()=>{const q=LQ[+d.dataset.i],ok=+b.dataset.o===q[2];$$('button',d).forEach(x=>x.classList.remove('r','w'));b.classList.add(ok?'r':'w');d.querySelector('.why').hidden=false;S['lq'+d.dataset.i]=ok?1:0;save();$('langS').textContent=`ตอบถูก ${LQ.filter((_,i)=>S['lq'+i]===1).length}/${LQ.length} ข้อ`;refresh()}))}
+langQ();
+const RW=[['เด็กที่นี่ส่วนมากมาโรงเรียนด้วยมอไซค์','นักเรียนส่วนใหญ่ของโรงเรียนเดินทางมาโรงเรียนด้วยรถจักรยานยนต์'],['ทำแบบนี้แล้วมันได้ผลดีมากเลย','วิธีการดังกล่าวให้ผลเป็นที่น่าพอใจ'],['คนแก่ในหมู่บ้านชอบปลูกผักกินเอง','ผู้สูงอายุในชุมชนนิยมปลูกผักไว้บริโภคในครัวเรือน'],['เกมนี้ฮิตมากในหมู่เด็ก ม.2','เกมดังกล่าวได้รับความนิยมในกลุ่มนักเรียนชั้นมัธยมศึกษาปีที่ 2']];
+let rwi=0;const rw=()=>{$('rwSrc').textContent='“'+RW[rwi][0]+'”';$('rwAns').hidden=true;$('rwAns').textContent='แนวคำตอบ: '+RW[rwi][1];$('rwIn').value=''};rw();
+$('rwShow').onclick=()=>$('rwAns').hidden=false;$('rwNext').onclick=()=>{rwi=(rwi+1)%RW.length;rw()};
+const SLANG=['มาก ๆ','มากๆ','เยอะ','เลย','มัน','เท่าไหร่','ไหม','นะ','อะ','จ้า','ค่ะ','ครับ','ผม','หนู','พวกเรา','กิน','ชอบ','แบบ','ฮิต','ไม่ค่อย','ยังไง','ทำไมล่ะ','สุดๆ','สุด ๆ'];
+function slang(){const t=$('slangIn').value;let h=esc(t);const found=new Set();SLANG.slice().sort((a,b)=>b.length-a.length).forEach(w=>{const re=new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g');if(re.test(h)){found.add(w);h=h.replace(re,`<mark>${w}</mark>`)}});
+ $('slangOut').innerHTML=(h||'<span class="note">ยังไม่มีข้อความ</span>')+(found.size?`<p class="note" style="margin-top:8px">พบ ${found.size} คำ ลองเปลี่ยนเป็นภาษาเขียน เช่น กิน → รับประทาน/บริโภค, เยอะ → จำนวนมาก, ชอบ → นิยม, ผม/พวกเรา → ผู้ศึกษา</p>`:'<p class="note ok" style="margin-top:8px">ไม่พบคำในรายการ</p>')}
+$('slangIn').oninput=slang;slang();
+
+/* ---------- 1.4 โครงร่าง ---------- */
+function outline(){const g=k=>S[k]||'';const objs=lines(g('o-obj')),ch2=lines(g('o-ch2')),src=lines(g('o-src')),mem=lines(g('o-mem'));
+ const html=`<h3>${esc(g('o-title')||'ชื่อเรื่องรายงาน')}</h3><p class="note">${mem.map(esc).join(' · ')||'สมาชิกกลุ่ม'}</p>
+ <h4>บทที่ 1 บทนำ</h4><ol><li>ที่มาและความสำคัญ<br><span class="note">${esc(g('o-why'))}</span></li><li>วัตถุประสงค์<ol>${objs.map(o=>`<li>${esc(o)}</li>`).join('')||'<li class="note">…</li>'}</ol></li><li>ขอบเขตการศึกษา<br><span class="note">${esc(g('o-scope'))}</span></li><li>ประโยชน์ที่คาดว่าจะได้รับ</li></ol>
+ <h4>บทที่ 2 เอกสารที่เกี่ยวข้อง</h4><ol>${ch2.map(o=>`<li>${esc(o)}</li>`).join('')||'<li class="note">หัวข้อที่ค้นคว้า</li>'}</ol>
+ <h4>บทที่ 3 วิธีดำเนินการศึกษา</h4><p class="note">${esc(g('o-how'))}</p><h4>บทที่ 4 ผลการศึกษา</h4><h4>บทที่ 5 สรุป อภิปรายผล และข้อเสนอแนะ</h4><h4>เอกสารอ้างอิง</h4><ol>${src.map(o=>`<li>${esc(o)}</li>`).join('')}</ol>`;
+ $('olPrev').innerHTML=html;
+ const c=[[g('o-title').trim().length>4,'มีชื่อเรื่อง'],[objs.length>=2,'วัตถุประสงค์อย่างน้อย 2 ข้อ'],[objs.length>0&&objs.every(o=>/^เพื่อ/.test(o)),'วัตถุประสงค์ขึ้นต้นด้วย "เพื่อ"'],[g('o-scope').trim().length>10,'ระบุขอบเขต'],[ch2.length>=2,'หัวข้อบทที่ 2 อย่างน้อย 2 หัวข้อ'],[src.length>=3,'แหล่งข้อมูลอย่างน้อย 3 แหล่ง']];
+ $('olCheck').innerHTML=c.map(([ok,t])=>`<div class="${ok?'ok':'no'}">${ok?'✓':'○'} ${t}</div>`).join('');S._ol=c.filter(x=>x[0]).length;return html}
+$('olCopy').onclick=()=>{const h=outline();copy($('olPrev').innerText,h)};
+
+/* ---------- 2.1 ห้องเขียน ---------- */
+const CH=[['ch1','บทที่ 1 บทนำ',300,'ที่มาและความสำคัญ วัตถุประสงค์ ขอบเขต ประโยชน์ที่คาดว่าจะได้รับ'],['ch2','บทที่ 2 เอกสารที่เกี่ยวข้อง',700,'สรุปความรู้จากแหล่งที่ค้นคว้าด้วยสำนวนของตนเอง พร้อมอ้างอิงในเนื้อหา เช่น (กรมควบคุมมลพิษ, 2567)'],['ch3','บทที่ 3 วิธีดำเนินการศึกษา',300,'ศึกษาจากแหล่งใด กลุ่มเป้าหมายคือใคร เครื่องมือที่ใช้ ขั้นตอนและระยะเวลา'],['ch4','บทที่ 4 ผลการศึกษา',700,'นำเสนอสิ่งที่ค้นพบตามวัตถุประสงค์ทีละข้อ ใช้ตารางหรือแผนภูมิประกอบ'],['ch5','บทที่ 5 สรุป อภิปรายผล และข้อเสนอแนะ',500,'สรุปคำตอบของวัตถุประสงค์ อธิบายว่าผลสอดคล้องกับข้อมูลในบทที่ 2 หรือไม่ และเสนอแนะสิ่งที่ทำต่อได้']];
+let ch=S.curCh||'ch1';
+$('chSel').innerHTML=CH.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join('');$('chSel').value=ch;
+function loadCh(){const c=CH.find(x=>x[0]===ch);$('chHint').textContent=c[3]+` · เป้าหมายประมาณ ${c[2]} คำ`;$('chText').value=S[ch]||''}
+$('chSel').onchange=()=>{ch=$('chSel').value;S.curCh=ch;save();loadCh();refresh()};loadCh();
+$('chText').oninput=()=>{S[ch]=$('chText').value;save();refresh()};
+function wcPanel(){let tot=0;$('wcList').innerHTML=CH.map(c=>{const n=wc(S[c[0]]);tot+=n;return`<div class="wcr"><span>${c[1].replace(/ บท.*$/,'')}${c[1].split(' ').slice(2).join(' ')?'':''}</span><div class="bar"><i style="width:${Math.min(100,n/c[2]*100)}%"></i></div><span>${n}/${c[2]}</span></div>`}).join('');
+ $('wcList').querySelectorAll('.wcr span:first-child').forEach((s,i)=>s.textContent='บทที่ '+(i+1));
+ $('totWc').textContent=tot.toLocaleString('th-TH');$('totBar').style.width=Math.min(100,tot/2500*100)+'%';$('chWc').textContent=wc(S[ch]).toLocaleString('th-TH')+' คำ';return tot}
+const chHtml=c=>`<h2>${c[1]}</h2>`+lines(S[c[0]]).map(p=>`<p>${esc(p)}</p>`).join('');
+$('chCopy').onclick=()=>{const c=CH.find(x=>x[0]===ch);copy(c[1]+'\n\n'+(S[ch]||''),chHtml(c))};
+$('allCopy').onclick=()=>{const refs=refSorted();const t=CH.map(c=>c[1]+'\n\n'+(S[c[0]]||'')).join('\n\n')+'\n\nเอกสารอ้างอิง\n\n'+refs.map(r=>r.txt).join('\n');
+ copy(t,`<h1>${esc(S['o-title']||'')}</h1>`+CH.map(chHtml).join('')+'<h2>เอกสารอ้างอิง</h2>'+refs.map(r=>`<p>${r.html}</p>`).join(''))};
+
+/* ---------- 2.2 อ้างอิง APA 7 ---------- */
+const CT={web:[['au','ผู้แต่งหรือหน่วยงาน','เช่น กรมควบคุมมลพิษ'],['y','ปี (พ.ศ. หรือ ค.ศ. ตามต้นฉบับ)','เช่น 2567'],['d','วันและเดือนที่เผยแพร่ (ถ้ามี)','เช่น 15 มกราคม'],['t','ชื่อบทความหรือหน้าเว็บ',''],['site','ชื่อเว็บไซต์',''],['url','URL','https://']],
+ book:[['au','ผู้แต่ง','เช่น สมชาย ใจดี (ไม่ใส่คำนำหน้า)'],['y','ปีที่พิมพ์',''],['t','ชื่อหนังสือ',''],['ed','พิมพ์ครั้งที่ (ถ้าไม่ใช่ครั้งแรก)','เช่น 2'],['pub','สำนักพิมพ์','']],
+ jour:[['au','ผู้แต่ง',''],['y','ปี',''],['t','ชื่อบทความ',''],['j','ชื่อวารสาร',''],['v','ปีที่ (ฉบับที่)','เช่น 12(2)'],['pp','เลขหน้า','เช่น 45-58'],['url','DOI หรือ URL (ถ้ามี)','']],
+ ai:[['au','บริษัทผู้พัฒนา','เช่น Google, OpenAI, Anthropic'],['y','ปี ค.ศ. ของรุ่นที่ใช้','เช่น 2026'],['t','ชื่อโปรแกรม','เช่น Gemini'],['ver','รุ่นหรือวันที่ใช้','เช่น 23 ตุลาคม 2569'],['url','URL','https://']],
+ int:[['au','ผู้ให้สัมภาษณ์',''],['role','ตำแหน่งหรือบทบาท','เช่น ผู้ใหญ่บ้านหมู่ 3'],['y','ปี',''],['d','วันและเดือนที่สัมภาษณ์',''],['by','ผู้สัมภาษณ์','']]};
+let ct='web';const fv={};
+function ctForm(){$$('#ctType button').forEach(b=>b.className='btn'+(b.dataset.ct===ct?'':' alt'));
+ $('ctForm').innerHTML=CT[ct].map(([k,l,p])=>`<label class="f" for="ct-${k}">${l}<input id="ct-${k}" class="in" placeholder="${p}" value="${esc(fv[ct+k]||'')}"></label>`).join('');
+ CT[ct].forEach(([k])=>$('ct-'+k).oninput=e=>{fv[ct+k]=e.target.value;ctOut()});ctOut()}
+const v=k=>(fv[ct+k]||'').trim();
+function build(type,g){const au=g('au')||'ไม่ปรากฏผู้แต่ง',y=g('y')||'ม.ป.ป.';let h='',inl=`(${au}, ${y})`;
+ if(type==='web')h=`${esc(au)}. (${esc(y)}${g('d')?', '+esc(g('d')):''}). <i>${esc(g('t'))}</i>. ${esc(g('site'))}${g('site')?'. ':''}${esc(g('url'))}`;
+ if(type==='book')h=`${esc(au)}. (${esc(y)}). <i>${esc(g('t'))}</i>${g('ed')?` (พิมพ์ครั้งที่ ${esc(g('ed'))})`:''}. ${esc(g('pub'))}.`;
+ if(type==='jour')h=`${esc(au)}. (${esc(y)}). ${esc(g('t'))}. <i>${esc(g('j'))}</i>, <i>${esc(g('v'))}</i>, ${esc(g('pp'))}.${g('url')?' '+esc(g('url')):''}`;
+ if(type==='ai')h=`${esc(au)}. (${esc(y)}). <i>${esc(g('t'))}</i>${g('ver')?` (${esc(g('ver'))})`:''} [โมเดลภาษาขนาดใหญ่]. ${esc(g('url'))}`;
+ if(type==='int'){h=`${esc(au)}${g('role')?`, ${esc(g('role'))}`:''}. (${esc(y)}${g('d')?', '+esc(g('d')):''}). <i>สัมภาษณ์</i> โดย ${esc(g('by'))}.`}
+ return{html:h,txt:h.replace(/<[^>]+>/g,''),inl,key:au}}
+function ctOut(){const r=build(ct,v);$('ctOut').innerHTML=r.html;$('ctIn').textContent=r.inl}
+$$('#ctType button').forEach(b=>b.onclick=()=>{ct=b.dataset.ct;ctForm()});ctForm();
+S.refs=S.refs||[];
+const refSorted=()=>S.refs.slice().sort((a,b)=>{const ta=/[ก-๙]/.test(a.key[0]),tb=/[ก-๙]/.test(b.key[0]);if(ta!==tb)return ta?-1:1;return a.key.localeCompare(b.key,'th')});
+function refList(){const r=refSorted();$('refList').innerHTML=r.map(x=>`<li class="cite" style="margin-bottom:6px">${x.html} <button type="button" class="btn alt" data-del="${S.refs.indexOf(x)}" style="padding:0 8px;font-size:12px">ลบ</button></li>`).join('')||'<li>ยังไม่มีรายการ</li>';
+ $$('#refList [data-del]').forEach(b=>b.onclick=()=>{S.refs.splice(+b.dataset.del,1);save();refList();refresh()})}
+$('ctAdd').onclick=()=>{const r=build(ct,v);if(!v('t')&&ct!=='int'){toast('ใส่ชื่อเรื่องก่อน');return}S.refs.push(r);save();refList();toast('เพิ่มแล้ว');refresh()};
+$('refCopy').onclick=()=>{const r=refSorted();copy(r.map(x=>x.txt).join('\n'),'<h2>เอกสารอ้างอิง</h2>'+r.map(x=>`<p>${x.html}</p>`).join(''))};refList();
+
+/* ---------- 2.3 แหล่งข้อมูล ---------- */
+const SRC=['รู้ว่าใครเขียน หรือหน่วยงานใดเผยแพร่','ผู้เขียนหรือหน่วยงานมีความรู้ในเรื่องนั้นจริง','มีวันที่เผยแพร่ และไม่เก่าเกินไปสำหรับเรื่องนี้','บอกแหล่งที่มาของข้อมูลหรือตัวเลข','ข้อมูลตรงกับแหล่งอื่นที่น่าเชื่อถืออย่างน้อย 1 แหล่ง'];
+$('srcChk').innerHTML=SRC.map((t,i)=>`<label><input type="checkbox" id="sc${i}"><span>${t}</span></label>`).join('');
+function srcScore(){const n=$$('#srcChk input').filter(x=>x.checked).length;$('srcScore').textContent=n+'/5';$('srcV').innerHTML=n>=4?'<b class="ok">ใช้ได้</b> นำไปอ้างอิงในรายงานได้':n>=2?'<b>ใช้อย่างระวัง</b> หาแหล่งอื่นมายืนยันเพิ่ม':'<b class="no">ไม่ควรใช้</b> หาแหล่งข้อมูลใหม่'}
+$$('#srcChk input').forEach(x=>x.onchange=srcScore);$('srcName').oninput=()=>$$('#srcChk input').forEach(x=>x.checked=false)||srcScore();srcScore();
+
+/* ---------- 2.4 ส่วนนำ ---------- */
+$('pfStart').onclick=()=>{if(($('pf-text').value||'').trim()){toast('มีคำนำอยู่แล้ว');return}$('pf-text').value=`รายงานเรื่อง${S['o-title']||'…'} เป็นส่วนหนึ่งของรายวิชาการสื่อสารและการนำเสนอ (IS2) รหัสวิชา I20202 ชั้นมัธยมศึกษาปีที่ 2 จัดทำขึ้นเพื่อศึกษา…\n\nเนื้อหาในรายงานประกอบด้วย…\n\nผู้จัดทำขอขอบคุณ…\n\nคณะผู้จัดทำ`;S['pf-text']=$('pf-text').value;save();refresh()};
+function front(){const mem=lines(S['o-mem']);$('cvPrev').innerHTML=`<div style="text-align:center;display:grid;gap:10px;padding:10px 0"><span class="note">รายงาน</span><h3>เรื่อง ${esc(S['o-title']||'…')}</h3><div style="margin-top:16px"><span class="note">จัดทำโดย</span><br>${mem.map(esc).join('<br>')||'…'}</div><div style="margin-top:16px"><span class="note">เสนอ</span><br>${esc(S['cv-teacher']||'')}</div><div style="margin-top:16px">รายงานนี้เป็นส่วนหนึ่งของรายวิชาการสื่อสารและการนำเสนอ (IS2) รหัสวิชา I20202<br>ภาคเรียนที่ 2 ปีการศึกษา 2569<br>${esc(S['cv-school']||'')}</div></div>`;
+ $('tocPrev').innerHTML=`<h3>สารบัญ</h3><ol style="list-style:none;padding:0">${['คำนำ',...CH.map(c=>c[1]),'เอกสารอ้างอิง','ภาคผนวก'].map(t=>`<li style="display:flex;gap:6px"><span>${t}</span><span style="flex:1;border-bottom:1px dotted var(--line)"></span><span class="note">หน้า</span></li>`).join('')}</ol>`}
+
+/* ---------- 2.5 ตรวจสอบ ---------- */
+const REV=['ชื่อเรื่องตรงกับเนื้อหา','วัตถุประสงค์ทุกข้อมีคำตอบในบทที่ 4 และ 5','ข้อมูลทุกตอนในบทที่ 2 มีการอ้างอิงในเนื้อหา','ทุกการอ้างอิงในเนื้อหามีอยู่ในเอกสารอ้างอิง และกลับกัน','เขียนด้วยสำนวนของตนเอง ไม่คัดลอกมาทั้งย่อหน้า','ใช้ภาษาแบบแผน ไม่มีภาษาพูดหรือคำแสลง','สะกดคำถูกต้อง โดยเฉพาะคำศัพท์เฉพาะและชื่อเฉพาะ','ตาราง แผนภูมิ และภาพ มีชื่อและเลขลำดับ','แต่ละย่อหน้ามีใจความสำคัญเดียว','บทที่ 5 ไม่มีข้อมูลใหม่ที่ไม่เคยกล่าวถึงมาก่อน','ความยาวรวมประมาณ 2,500 คำ','มีปก คำนำ และสารบัญ ครบถ้วน'];
+mkChk('revChk',REV,'rv');
+function autoRev(tot){const allTxt=CH.map(c=>S[c[0]]||'').join('\n');const cites=(allTxt.match(/\([^()]{2,60},\s?[0-9ม.ป]{2,}[^()]*\)/g)||[]).length;const sl=SLANG.filter(w=>allTxt.includes(w));
+ const items=[[tot>=2200&&tot<=2900,`ความยาว ${tot.toLocaleString('th-TH')} คำ`+(tot<2200?' (ยังน้อยกว่าเป้าหมาย)':tot>2900?' (ยาวเกินเป้าหมาย)':'')],[cites>0,`พบการอ้างอิงในเนื้อหา ${cites} แห่ง`],[S.refs.length>=3,`มีเอกสารอ้างอิง ${S.refs.length} รายการ`],[sl.length===0,sl.length?'พบคำที่อาจเป็นภาษาพูด: '+sl.slice(0,8).join(', '):'ไม่พบคำภาษาพูดจากรายการ'],[!!(S['pf-text']||'').trim(),'มีคำนำ']];
+ $('autoRev').innerHTML=items.map(([ok,t])=>`<div class="${ok?'ok':'no'}">${ok?'✓':'○'} ${esc(t)}</div>`).join('');
+ const n=REV.filter((_,i)=>S['rv'+i]).length;$('revN').textContent=n+'/12';$('revBar').style.width=n/12*100+'%'}
+
+/* ---------- 3.1 โพสเตอร์ ---------- */
+function poster(){const g=k=>esc(S[k]||'');const finds=lines(S['ps-3']);
+ $('pst').innerHTML=`<div class="pt">${g('ps-t')||'ชื่อเรื่อง'}</div><div class="pa">${g('ps-a')||'ผู้จัดทำ'} · ${esc(S['cv-school']||'โรงเรียนวังโพรงพิทยาคม')}</div>
+ <div class="pg"><div class="pb"><b>ทำไมต้องศึกษา</b>${g('ps-1')}</div><div class="pb"><b>วิธีการศึกษา</b>${g('ps-2')}</div><div class="pb" style="grid-column:1/-1"><b>สิ่งที่ค้นพบ</b><ul style="margin:2px 0;padding-left:16px">${finds.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>${S['ps-5']?`<div style="border:1px dashed var(--line);border-radius:6px;padding:10px;text-align:center;margin-top:6px" class="note">[ ภาพ: ${g('ps-5')} ]</div>`:''}</div><div class="pb" style="grid-column:1/-1"><b>ข้อสรุปและข้อเสนอแนะ</b>${g('ps-4')}</div></div>
+ <div class="pf">รายวิชา IS2 การสื่อสารและการนำเสนอ · ภาคเรียนที่ 2/2569</div>`;
+ const over=[['ps-1','ทำไมต้องศึกษา'],['ps-2','วิธีการศึกษา'],['ps-4','ข้อสรุป']].filter(([k])=>wc(S[k])>40).map(x=>x[1]);
+ $('pstWarn').innerHTML=over.length?`<span class="no">ข้อความยาวเกิน 40 คำ: ${over.join(', ')} ลองตัดให้สั้นลง</span>`:'ร่างนี้ใช้วางแผนพื้นที่ ทำโพสเตอร์จริงใน Canva หรือวาดบนกระดาษ'}
+
+/* ---------- 3.2 บทพูด ---------- */
+function speech(){const n=wc(S['sp-o'])+wc(S['sp-b'])+wc(S['sp-c']);const sec=Math.round(n/120*60);$('spTime').textContent=`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`}
+/* ---------- 3.3 ซ้อม ---------- */
+let tmLeft=300,tmRun=null;const tmTotal=()=>+$('tmMin').value*60;
+function tmShow(){const s=Math.max(0,tmLeft);$('tmT').textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;const el=tmTotal()-tmLeft,T=tmTotal();const ph=el<T*.12?0:el<T*.85?1:2;
+ $$('#tmS span').forEach((x,i)=>x.classList.toggle('on',i===ph&&tmRun!=null));
+ if(tmRun!=null){const src=[S['sp-o'],S['sp-b'],S['sp-c']][ph]||['เปิด: ทักทาย แนะนำตัว ดึงความสนใจ','เนื้อหา: ที่มา วิธีศึกษา สิ่งที่ค้นพบ','ปิด: สรุป 1 ประโยค ข้อเสนอแนะ ขอบคุณ'][ph];$('tmCue').textContent=src.slice(0,220)}
+ $('tmT').style.color=tmLeft<=30?'var(--coral)':''}
+$('tmMin').onchange=()=>{if(tmRun==null){tmLeft=tmTotal();tmShow()}};
+$('tmGo').onclick=()=>{if(tmRun!=null){clearInterval(tmRun);tmRun=null;$('tmGo').textContent='ทำต่อ';return}$('tmGo').textContent='หยุดชั่วคราว';tmRun=setInterval(()=>{tmLeft--;tmShow();if(tmLeft<=0){clearInterval(tmRun);tmRun=null;$('tmGo').textContent='เริ่ม';$('tmCue').textContent='หมดเวลา ลองดูว่าส่วนไหนควรตัดให้กระชับ'}},1000);tmShow()};
+$('tmReset').onclick=()=>{clearInterval(tmRun);tmRun=null;tmLeft=tmTotal();$('tmGo').textContent='เริ่ม';$('tmCue').textContent='กดเริ่มแล้วการ์ดช่วยจำจะเปลี่ยนตามช่วงเวลา';tmShow()};tmShow();
+mkChk('spkChk',['พูดจบภายในเวลาที่กำหนด','เปิดเรื่องแล้วผู้ฟังอยากฟังต่อ','สบตาผู้ฟัง ไม่ก้มอ่านตลอด','เสียงดังพอ ชัดเจน ไม่เร็วเกินไป','ชี้ภาพหรือกราฟประกอบขณะพูด','ตอบคำถามได้ตรงประเด็น'],'sk');
+mkChk('pubChk',['จัดแสดงโพสเตอร์ในโรงเรียน','นำเสนอให้นักเรียนห้องอื่นหรือผู้ปกครองฟัง','เผยแพร่ทางเพจหรือช่องทางออนไลน์ของโรงเรียน','นำข้อค้นพบไปบอกคนในชุมชนที่เกี่ยวข้อง'],'pb');
+
+
+/* ---------- AI ---------- */
+const PR=[
+ ['p1','01','ช่วยแคบประเด็น','ฉันเป็นนักเรียน ม.2 กำลังทำรายงานเชิงวิชาการ กลุ่มสนใจเรื่อง [เรื่องกว้าง] ในบริบท [โรงเรียน/ชุมชนของเรา]\nอย่าเลือกหัวข้อให้ แต่ช่วยถามคำถามฉันทีละข้อ 5 ข้อ เพื่อให้ฉันแคบประเด็นลงจนได้คำถามที่ศึกษาได้ภายใน 1 ภาคเรียน'],
+ ['p2','01','ตรวจวัตถุประสงค์','นี่คือชื่อเรื่องและวัตถุประสงค์รายงานของฉัน\n[วางชื่อเรื่องและวัตถุประสงค์]\nอย่าเขียนใหม่ให้ บอกเพียงว่าแต่ละข้อชัดเจน วัดผลได้ และสอดคล้องกับชื่อเรื่องหรือไม่ พร้อมคำถามที่ช่วยให้ฉันปรับเอง'],
+ ['p3','02','อธิบายเรื่องที่อ่านไม่เข้าใจ','ฉันอ่านข้อความนี้แล้วไม่เข้าใจ: [วางข้อความสั้น ๆ]\nช่วยอธิบายแบบนักเรียน ม.2 เข้าใจ ยกตัวอย่างใกล้ตัว 1 ตัวอย่าง แล้วถามฉัน 2 ข้อเพื่อเช็กว่าเข้าใจจริง'],
+ ['p4','02','ชี้ภาษาพูดและคำผิด','ช่วยตรวจย่อหน้ารายงานเชิงวิชาการนี้ อย่าเขียนใหม่ทั้งย่อหน้า ให้ระบุเป็นข้อ ๆ ว่าคำไหนเป็นภาษาพูด คำไหนสะกดผิด และเสนอคำที่เหมาะกว่า\n[วางย่อหน้า]'],
+ ['p5','02','หาคำค้นหาที่ดี','ฉันกำลังค้นข้อมูลเรื่อง [หัวข้อย่อย] แนะนำคำค้นหาภาษาไทยและอังกฤษ 5 ชุด และบอกว่าควรหาจากแหล่งประเภทไหน (หน่วยงานรัฐ มหาวิทยาลัย วารสาร) ห้ามแต่งชื่อบทความหรือลิงก์ขึ้นเอง'],
+ ['p6','03','ย่อข้อความโพสเตอร์','ข้อความนี้จะอยู่บนโพสเตอร์ ยาวเกินไป ช่วยบอกว่าใจความสำคัญอยู่ตรงไหน และคำไหนตัดได้ ให้ฉันเป็นคนเขียนฉบับย่อเอง\n[วางข้อความ]'],
+ ['p7','03','ซ้อมตอบคำถาม','สวมบทเป็นครูและเพื่อนที่ฟังการนำเสนอรายงานเรื่อง [ชื่อเรื่อง] ซึ่งค้นพบว่า [ข้อค้นพบหลัก]\nถามคำถามฉันทีละข้อ 5 ข้อ จากง่ายไปยาก รอให้ฉันตอบก่อนถามข้อต่อไป แล้วให้คำแนะนำสั้น ๆ ต่อคำตอบของฉัน'],
+ ['p8','03','ความเห็นต่อบทพูด','นี่คือบทพูดนำเสนอ 3 นาทีของฉัน ช่วยให้ความเห็น 3 ข้อ: การเปิดน่าสนใจไหม ลำดับเข้าใจง่ายไหม การปิดจำได้ไหม อย่าเขียนบทใหม่ให้\n[วางบทพูด]']];
+$('pgrid').innerHTML=PR.map(p=>`<div class="pc2" id="pc-${p[0]}"><span class="u">หน่วย ${p[1]}</span><b>${p[2]}</b><pre>${esc(p[3])}</pre><button class="btn alt" type="button" data-cp="${p[0]}">คัดลอกคำสั่ง</button></div>`).join('');
+$$('[data-cp]').forEach(b=>b.onclick=()=>copy(PR.find(p=>p[0]===b.dataset.cp)[3]));
+$$('[data-ai]').forEach(b=>b.onclick=()=>{go('ai','aib');setTimeout(()=>{const c=$('pc-'+b.dataset.ai);if(c){c.scrollIntoView({block:'center'});c.style.outline='3px solid var(--mark)';setTimeout(()=>c.style.outline='',1800)}},50)});
+S.log=S.log||[['','','','','']];
+const LH=['วันที่','โปรแกรม AI','ถาม/สั่งว่าอะไร (โดยย่อ)','นำคำตอบไปใช้ส่วนไหน อย่างไร','ตรวจกับแหล่งใด'];
+function logT(){$('logT').innerHTML='<tr>'+LH.map(h=>`<th>${h}</th>`).join('')+'<th></th></tr>'+S.log.map((r,i)=>'<tr>'+r.map((c,j)=>`<td><textarea data-r="${i}" data-c="${j}" rows="2" aria-label="${LH[j]}">${esc(c)}</textarea></td>`).join('')+`<td><button class="btn alt" type="button" data-dl="${i}" style="padding:2px 8px">ลบ</button></td></tr>`).join('');
+ $$('#logT textarea').forEach(t=>t.oninput=()=>{S.log[+t.dataset.r][+t.dataset.c]=t.value;save()});
+ $$('#logT [data-dl]').forEach(b=>b.onclick=()=>{S.log.splice(+b.dataset.dl,1);if(!S.log.length)S.log.push(['','','','','']);save();logT()})}
+$('logAdd').onclick=()=>{S.log.push(['','','','','']);save();logT()};
+$('logCopy').onclick=()=>{const rows=S.log.filter(r=>r.some(Boolean));copy('ภาคผนวก บันทึกการใช้ปัญญาประดิษฐ์ (AI)\n'+[LH,...rows].map(r=>r.join('\t')).join('\n'),'<h2>ภาคผนวก บันทึกการใช้ปัญญาประดิษฐ์ (AI)</h2><table border="1" cellpadding="4" style="border-collapse:collapse"><tr>'+LH.map(h=>`<th>${h}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+r.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('')+'</table>')};
+logT();
+
+/* ---------- ความก้าวหน้า ---------- */
+function prog(){const tot=CH.reduce((a,c)=>a+wc(S[c[0]]),0);
+ const u1=[...[0,1,2,3,4].map(i=>!!S['u1a'+(i+1)]),LQ.filter((_,i)=>S['lq'+i]===1).length>=4,[1,2,3,4,5].filter(i=>S['tp'+i]).length>=4,(S._ol||0)>=5];
+ const u2=[tot>=500,tot>=1500,tot>=2200,(S.refs||[]).length>=3,!!(S['pf-text']||'').trim(),REV.filter((_,i)=>S['rv'+i]).length>=10];
+ const u3=[!!S['ps-t']&&!!S['ps-3'],!!S['sp-b'],[0,1,2,3,4,5].filter(i=>S['sk'+i]).length>=4,[0,1,2,3].some(i=>S['pb'+i]),!!(S['pub-ref']||'').trim()];
+ return{u1,u2,u3,tot}}
+function progress(){const p=prog();['u1','u2','u3'].forEach(k=>{const a=p[k],n=a.filter(Boolean).length;$('p-'+k).style.width=n/a.length*100+'%';$('t-'+k).textContent=`ทำแล้ว ${n} จาก ${a.length} ขั้น`})}
+function refresh(){outline();const t=wcPanel();front();autoRev(t);poster();speech()}
+refresh();progress();
+const h=(location.hash||'').slice(1);go(VIEWS.includes(h)?h:(S.view&&S.view!=='home'&&!h?'home':'home'));
+window.addEventListener('hashchange',()=>{const x=location.hash.slice(1);if(VIEWS.includes(x))go(x)});
+})();
+</script>
+</body>
+</html>
