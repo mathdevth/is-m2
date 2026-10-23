@@ -134,6 +134,16 @@ textarea{min-height:90px;resize:vertical;line-height:1.7}
 .tw2{overflow-x:auto}
 .aitip{border:1px dashed var(--teal);border-radius:10px;padding:8px 12px;font-size:14px;background:var(--tealsoft)}
 .aitip button{background:none;border:0;color:var(--teal);font-weight:700;cursor:pointer;padding:0;text-decoration:underline}
+.acct{display:flex;align-items:center;gap:8px;font-size:14px}
+.acct .who{font-weight:600}.acct .sync{font-size:12.5px;color:var(--mute)}
+.acct button{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:4px 12px;cursor:pointer}
+.acct button.pri{background:var(--teal);color:#fff;border-color:var(--teal)}
+.modal{position:fixed;inset:0;background:rgba(10,30,36,.45);display:grid;place-items:center;z-index:30;padding:max(16px,env(safe-area-inset-left,0px))}
+.modal .card{width:min(420px,100%);display:flex;flex-direction:column;gap:12px}
+.ttab{width:100%;border-collapse:collapse;font-size:14px}.ttab th,.ttab td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}.ttab th{background:var(--paper)}
+.ttab td.n{text-align:right;font-variant-numeric:tabular-nums}
+.slips{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}.slip{border:1px dashed var(--ink);border-radius:8px;padding:10px;font-size:14px}.slip b.pw{font-family:var(--mono);font-size:18px}
+.viewer{white-space:pre-wrap}
 footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;border-top:1px solid var(--line);padding-top:16px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--sheet);border-radius:99px;padding:8px 18px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20}
 .toast.on{opacity:1}
@@ -152,7 +162,9 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
     <button type="button" data-go="u2"><small>02</small>เรียงร้อยถ้อยคำ</button>
     <button type="button" data-go="u3"><small>03</small>เล่าสู่กันฟัง</button>
     <button type="button" data-go="ai"><small>+</small>AI และเครื่องมือ</button>
+    <button type="button" data-go="teacher" id="navT" hidden>ครู</button>
   </nav>
+  <div class="acct" id="acct"></div>
 </div></header>
 
 <!-- ===== ภาพรวม ===== -->
@@ -396,6 +408,19 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
   </section>
 </main>
 
+<!-- ===== ครู ===== -->
+<main id="v-teacher" hidden>
+  <div class="rhead"><span class="big">T</span><div><h2>ห้องครู</h2><p>ดูความคืบหน้าของนักเรียน เปิดอ่านงาน และสร้างบัญชีนักเรียน</p></div></div>
+  <div class="tabs" id="tTabs"><button type="button" data-tt="list" aria-selected="true">นักเรียนและงาน</button><button type="button" data-tt="new" aria-selected="false">สร้างบัญชีนักเรียน</button></div>
+  <div id="tBody"></div>
+</main>
+<div class="modal" id="loginM" hidden><form class="card" id="loginF" autocomplete="on"><h3>เข้าสู่ระบบ</h3><p class="note">นักเรียนใช้เลขประจำตัวและรหัสที่ครูแจก · ครูใช้อีเมล</p>
+  <label class="f" for="lgId">เลขประจำตัว หรืออีเมลครู<input id="lgId" class="in" autocomplete="username" required></label>
+  <label class="f" for="lgPw">รหัส<input id="lgPw" class="in" type="password" autocomplete="current-password" required></label>
+  <p class="no" id="lgErr" hidden></p>
+  <div class="row"><button class="btn tl2" type="submit" id="lgGo">เข้าสู่ระบบ</button><button class="btn alt" type="button" id="lgX">ยกเลิก</button></div></form></div>
+<div class="modal" id="viewM" hidden><div class="card" style="width:min(820px,100%);max-height:88vh;overflow:auto"><div class="row"><h3 id="vmT" style="flex:1"></h3><button class="btn alt" type="button" id="vmX">ปิด</button></div><div id="vmB" class="doc viewer"></div></div></div>
+
 <footer><span>รายวิชา I20202 การสื่อสารและการนำเสนอ (IS2) · โรงเรียนวังโพรงพิทยาคม</span><span>ครูคุ้ม อชิตพล บุณรัตน์ · <a href="https://mathdevth.github.io/" style="color:inherit">mathdevth.github.io</a></span></footer>
 </div>
 <div class="toast" id="toast" role="status"></div>
@@ -404,8 +429,10 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
 (function(){
 const $=id=>document.getElementById(id),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let S={};try{S=JSON.parse(localStorage.getItem('is2studio')||'{}')}catch(e){}
-const save=()=>{try{localStorage.setItem('is2studio',JSON.stringify(S))}catch(e){}};
+let ACT=null;try{ACT=localStorage.getItem('is2active')}catch(e){}
+const LK=ACT?'is2studio_'+ACT:'is2studio';
+let S={};try{S=JSON.parse(localStorage.getItem(LK)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(LK,JSON.stringify(S))}catch(e){};if(window.IS2push)window.IS2push()};
 const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1800)};
 async function copy(text,html){try{if(html&&window.ClipboardItem){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})])}else await navigator.clipboard.writeText(text);toast('คัดลอกแล้ว')}
  catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('คัดลอกแล้ว')}catch(_){toast('คัดลอกไม่ได้ ลองเลือกข้อความเอง')}t.remove()}}
@@ -414,10 +441,10 @@ const wc=t=>{t=(t||'').trim();if(!t)return 0;if(seg){let n=0;for(const s of seg.
 const lines=t=>(t||'').split('\n').map(x=>x.trim()).filter(Boolean);
 
 /* ---------- นำทาง ---------- */
-const VIEWS=['home','u1','u2','u3','ai'];
+const VIEWS=['home','u1','u2','u3','ai','teacher'];
 function go(v,tab){if(!VIEWS.includes(v))v='home';VIEWS.forEach(x=>$('v-'+x).hidden=x!==v);
  $$('.nav button').forEach(b=>b.dataset.go===v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));
- if(v!=='home'){const room=$$(`.tabs[data-room="${v}"]`)[0];const t=tab||S['tab_'+v]||room.querySelector('button').dataset.t;openTab(v,t)}
+ if(v!=='home'&&v!=='teacher'){const room=$$(`.tabs[data-room="${v}"]`)[0];const t=tab||S['tab_'+v]||room.querySelector('button').dataset.t;openTab(v,t)}
  S.view=v;save();try{history.replaceState(null,'','#'+(v==='home'?'top':v))}catch(e){}if(v==='home')progress();try{scrollTo(0,0)}catch(e){}}
 function openTab(v,t){const room=$$(`.tabs[data-room="${v}"]`)[0];$$('button',room).forEach(b=>{const on=b.dataset.t===t;b.setAttribute('aria-selected',on);$(b.dataset.t).hidden=!on});S['tab_'+v]=t;save();refresh()}
 $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));$('toHome').onclick=()=>go('home');
@@ -575,6 +602,94 @@ function refresh(){outline();const t=wcPanel();front();autoRev(t);poster();speec
 refresh();progress();
 const h=(location.hash||'').slice(1);go(VIEWS.includes(h)?h:(S.view&&S.view!=='home'&&!h?'home':'home'));
 window.addEventListener('hashchange',()=>{const x=location.hash.slice(1);if(VIEWS.includes(x))go(x)});
+window.IS2={S:()=>S,LK,ACT,go,wc,prog,CH,esc,toast,copy};
+})();
+</script>
+<script>
+/* ===== บัญชีผู้ใช้และบันทึกขึ้นระบบ (Firebase) ===== */
+(function(){
+const $=id=>document.getElementById(id),I=window.IS2,esc=I.esc;
+const DOM='students.is2wpp.app';let DB=null,U=null,ME=null,TEACHER=false,timer=null,lastSync=null;
+const acct=$('acct');
+function chip(){if(!DB){acct.innerHTML='<span class="sync">งานเก็บในเครื่องนี้</span>';return}
+ if(!U){acct.innerHTML='<span class="sync">ยังไม่ได้เข้าสู่ระบบ · งานเก็บในเครื่องนี้</span><button type="button" class="pri" id="inBtn">เข้าสู่ระบบ</button>';$('inBtn').onclick=()=>{$('loginM').hidden=false;$('lgId').focus()};return}
+ const who=TEACHER?'ครู':(ME?ME.name.split(' ').slice(-2).join(' '):'');
+ acct.innerHTML=`<span class="who">${esc(who)}</span><span class="sync" id="syncS">${TEACHER?'':lastSync?'บันทึกขึ้นระบบแล้ว '+lastSync:'เชื่อมต่อแล้ว'}</span><button type="button" id="outBtn">ออกจากระบบ</button>`;$('outBtn').onclick=logout}
+function load(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+async function init(){chip();let cfg=null;
+ try{const r=await fetch('config.json',{cache:'no-store'});if(r.ok)cfg=(await r.json()).firebase}catch(e){}
+ if(!cfg||!cfg.apiKey)return;
+ const v='https://cdn.jsdelivr.net/npm/firebase@10.12.2/';
+ try{await load(v+'firebase-app-compat.js');await load(v+'firebase-auth-compat.js');await load(v+'firebase-firestore-compat.js')}catch(e){return}
+ firebase.initializeApp(cfg);const fs=firebase.firestore();
+ DB={auth:firebase.auth(),fs,ts:()=>firebase.firestore.FieldValue.serverTimestamp(),doc:p=>fs.doc(p)};
+ chip();DB.auth.onAuthStateChanged(onUser)}
+async function onUser(u){U=u;ME=null;TEACHER=false;$('navT').hidden=true;
+ if(!u){if(I.ACT){try{localStorage.removeItem('is2active')}catch(e){}location.reload();return}chip();return}
+ TEACHER=(await DB.doc('teachers/'+u.uid).get().catch(()=>null))?.exists||false;
+ if(TEACHER){$('navT').hidden=false;chip();if(location.hash==='#teacher')I.go('teacher');return}
+ const d=await DB.doc('is2students/'+u.uid).get().catch(()=>null);ME=d&&d.exists?d.data():null;
+ if(!ME){acct.innerHTML='<span class="sync no">ไม่พบข้อมูลนักเรียน ติดต่อครู</span><button type="button" id="outBtn">ออกจากระบบ</button>';$('outBtn').onclick=logout;return}
+ if(I.ACT!==u.uid){ /* เพิ่งเข้าสู่ระบบในเครื่องนี้: ดึงงานจากระบบ */
+  let data=null;try{const w=await DB.doc('is2work/'+u.uid).get();if(w.exists)data=w.data().data}catch(e){}
+  if(!data){try{data=localStorage.getItem('is2studio')}catch(e){}} /* บัญชีใหม่: ย้ายงานที่ทำไว้ก่อนเข้าสู่ระบบ */
+  try{localStorage.setItem('is2studio_'+u.uid,data||'{}');localStorage.setItem('is2active',u.uid);localStorage.removeItem('is2studio')}catch(e){}
+  location.reload();return}
+ window.IS2push=()=>{clearTimeout(timer);const s=$('syncS');if(s)s.textContent='กำลังบันทึก…';timer=setTimeout(push,1500)};
+ chip()}
+async function push(){if(!U||!ME)return;const S=I.S(),p=I.prog();
+ const clean={...S};delete clean.view;
+ try{await DB.doc('is2work/'+U.uid).set({uid:U.uid,sid:ME.sid,name:ME.name,cls:ME.cls,no:ME.no||'',data:JSON.stringify(clean),words:p.tot,refs:(S.refs||[]).length,
+   u1:p.u1.filter(Boolean).length+'/'+p.u1.length,u2:p.u2.filter(Boolean).length+'/'+p.u2.length,u3:p.u3.filter(Boolean).length+'/'+p.u3.length,title:S['o-title']||'',updated:DB.ts()});
+  lastSync=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});const s=$('syncS');if(s)s.textContent='บันทึกขึ้นระบบแล้ว '+lastSync;return true}
+ catch(e){const s=$('syncS');if(s)s.innerHTML='<span class="no">บันทึกขึ้นระบบไม่สำเร็จ งานยังอยู่ในเครื่อง</span>';return false}}
+async function logout(){let ok=true;if(ME){clearTimeout(timer);ok=await push()}try{localStorage.removeItem('is2active');if(U&&ok)localStorage.removeItem('is2studio_'+U.uid)}catch(e){}await DB.auth.signOut();location.hash='';location.reload()}
+window.addEventListener('beforeunload',()=>{if(timer){clearTimeout(timer);push()}});
+/* ---------- ฟอร์มเข้าสู่ระบบ ---------- */
+$('lgX').onclick=()=>$('loginM').hidden=true;
+$('loginF').addEventListener('submit',async e=>{e.preventDefault();const id=$('lgId').value.trim(),pw=$('lgPw').value;const em=id.includes('@')?id:`${id.toLowerCase()}@${DOM}`;
+ $('lgGo').disabled=true;$('lgErr').hidden=true;
+ try{await DB.auth.signInWithEmailAndPassword(em,pw);$('loginM').hidden=true}catch(err){$('lgErr').hidden=false;$('lgErr').textContent=/wrong-password|invalid-credential|user-not-found|invalid-login/.test(err.code||'')?'เลขประจำตัวหรือรหัสไม่ถูกต้อง':/too-many/.test(err.code||'')?'ลองผิดหลายครั้ง รอสักครู่แล้วลองใหม่':'เข้าสู่ระบบไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วลองใหม่'}
+ $('lgGo').disabled=false});
+/* ---------- ห้องครู ---------- */
+const tt=[...document.querySelectorAll('#tTabs button')];tt.forEach(b=>b.onclick=()=>{tt.forEach(x=>x.setAttribute('aria-selected',x===b));b.dataset.tt==='list'?tList():tNew()});
+$('navT').addEventListener('click',()=>{if(TEACHER)tList()});
+const td=t=>t&&t.toDate?t.toDate().toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}):'–';
+function csvCopy(rows){I.copy(rows.map(r=>r.map(c=>String(c??'').replace(/\t|\n/g,' ')).join('\t')).join('\n'))}
+async function tList(){const B=$('tBody');if(!TEACHER){B.innerHTML='<p class="note">เข้าสู่ระบบด้วยบัญชีครูก่อน</p>';return}B.innerHTML='<p class="note">กำลังโหลด…</p>';
+ let st=[],wk=[];try{st=(await DB.fs.collection('is2students').get()).docs.map(d=>({id:d.id,...d.data()}));wk=(await DB.fs.collection('is2work').get()).docs.map(d=>({id:d.id,...d.data()}))}catch(e){B.innerHTML='<p class="no">โหลดไม่ได้ ตรวจกฎ Firestore ของ is2students และ is2work</p>';return}
+ const W=Object.fromEntries(wk.map(w=>[w.id,w]));const cls=[...new Set(st.map(x=>x.cls))].sort();let f='';
+ const draw=()=>{const r=st.filter(x=>!f||x.cls===f).sort((a,b)=>String(a.cls).localeCompare(String(b.cls))||(+a.no||0)-(+b.no||0));
+  B.innerHTML=`<div class="row" style="margin-bottom:10px"><select id="tCls" class="in" style="width:auto"><option value="">ทุกห้อง (${st.length} คน)</option>${cls.map(c=>`<option ${c===f?'selected':''}>${esc(c)}</option>`).join('')}</select><button class="btn alt" type="button" id="tCp">คัดลอกตารางไปวาง Excel</button></div>
+  <div class="tw2"><table class="ttab"><tr><th>ชั้น</th><th>เลขที่</th><th>ชื่อ</th><th>ชื่อเรื่อง</th><th>คำ</th><th>อ้างอิง</th><th>ห้อง 1</th><th>ห้อง 2</th><th>ห้อง 3</th><th>บันทึกล่าสุด</th><th></th></tr>${r.map(x=>{const w=W[x.id]||{};return`<tr><td>${esc(x.cls)}</td><td class="n">${esc(x.no)}</td><td>${esc(x.name)}</td><td>${esc(w.title||'–')}</td><td class="n">${w.words??0}</td><td class="n">${w.refs??0}</td><td>${w.u1||'–'}</td><td>${w.u2||'–'}</td><td>${w.u3||'–'}</td><td>${td(w.updated)}</td><td>${w.data?`<button class="btn alt" type="button" data-v="${x.id}" style="padding:2px 10px">ดูงาน</button>`:''}</td></tr>`}).join('')}</table></div>`;
+  $('tCls').onchange=e=>{f=e.target.value;draw()};
+  $('tCp').onclick=()=>csvCopy([['ชั้น','เลขที่','เลขประจำตัว','ชื่อ','ชื่อเรื่อง','จำนวนคำ','อ้างอิง','ห้อง1','ห้อง2','ห้อง3','บันทึกล่าสุด'],...r.map(x=>{const w=W[x.id]||{};return[x.cls,x.no,x.sid,x.name,w.title,w.words??0,w.refs??0,w.u1,w.u2,w.u3,td(w.updated)]})]);
+  B.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>view(st.find(x=>x.id===b.dataset.v),W[b.dataset.v]))};draw()}
+function view(s,w){let d={};try{d=JSON.parse(w.data)}catch(e){}
+ const sec=(t,v)=>v&&String(v).trim()?`<h4>${t}</h4><div>${esc(v)}</div>`:'';
+ const log=(d.log||[]).filter(r=>r.some(Boolean));
+ $('vmT').textContent=`${s.name} · ${s.cls} เลขที่ ${s.no}`;
+ $('vmB').innerHTML=`<h3>${esc(d['o-title']||'(ยังไม่ตั้งชื่อเรื่อง)')}</h3><p class="note">${(w.words||0).toLocaleString('th-TH')} คำ · อ้างอิง ${w.refs||0} รายการ</p>`+
+  sec('สมาชิกกลุ่ม',d['o-mem'])+sec('วัตถุประสงค์',d['o-obj'])+sec('ขอบเขต',d['o-scope'])+sec('วิธีการศึกษา',d['o-how'])+
+  I.CH.map(c=>sec(`${c[1]} (${I.wc(d[c[0]])} คำ)`,d[c[0]])).join('')+
+  ((d.refs||[]).length?`<h4>เอกสารอ้างอิง</h4>${d.refs.map(r=>`<div>${r.html}</div>`).join('')}`:'')+
+  sec('คำนำ',d['pf-text'])+sec('โพสเตอร์: สิ่งที่ค้นพบ',d['ps-3'])+sec('บทพูด',[d['sp-o'],d['sp-b'],d['sp-c']].filter(Boolean).join('\n\n'))+
+  (log.length?`<h4>บันทึกการใช้ AI</h4>${log.map(r=>`<div>• ${r.map(esc).join(' | ')}</div>`).join('')}`:'')+sec('หลักฐานการเผยแพร่',d['pub-ev'])+sec('สะท้อนคิด',d['pub-ref']);
+ $('viewM').hidden=false}
+$('vmX').onclick=()=>$('viewM').hidden=true;
+function tNew(){const B=$('tBody');B.innerHTML=`<div class="card stack"><p>วางรายชื่อจาก Excel หรือ Google Sheets บรรทัดละคน เรียงคอลัมน์ <b>เลขประจำตัว, ชื่อ–สกุล, ชั้น, เลขที่</b> ระบบสุ่มรหัสให้แต่ละคน</p>
+ <textarea id="nR" style="min-height:160px" placeholder="23456	เด็กหญิงตัวอย่าง ใจดี	2/1	5"></textarea><div class="row"><button class="btn tl2" type="button" id="nGo">สร้างบัญชี</button><span class="note" id="nM"></span></div><div id="nOut"></div></div>`;
+ $('nGo').onclick=async()=>{const rows=$('nR').value.split(/\n/).map(l=>l.split(/\t|,/).map(x=>x.trim())).filter(r=>r[0]&&r[1]);if(!rows.length){$('nM').textContent='ยังไม่มีรายชื่อ';return}
+  $('nGo').disabled=true;const ok=[],bad=[],al='abcdefghjkmnpqrstuvwxyz23456789';
+  const sec=firebase.apps.find(a=>a.name==='sec')||firebase.initializeApp(firebase.app().options,'sec');
+  for(const [sid,name,cls,no] of rows){const pw=[...crypto.getRandomValues(new Uint32Array(8))].map(v=>al[v%al.length]).join('');$('nM').textContent=`กำลังสร้าง ${ok.length+bad.length+1}/${rows.length}…`;
+   try{const c=await sec.auth().createUserWithEmailAndPassword(`${sid.toLowerCase()}@${DOM}`,pw);const uid=c.user.uid;await sec.auth().signOut();
+    await DB.doc('is2students/'+uid).set({sid,name,cls:cls||'',no:no||'',created:DB.ts()});ok.push({sid,name,cls,no,pw})}
+   catch(e){bad.push(`${sid} ${name}: ${/email-already/.test(e.code||'')?'มีบัญชีอยู่แล้ว':(e.code||e.message)}`)}}
+  $('nGo').disabled=false;$('nM').textContent=`สร้างสำเร็จ ${ok.length} คน`+(bad.length?` · ไม่สำเร็จ ${bad.length} คน: ${bad.join(' / ')}`:'');
+  $('nOut').innerHTML=ok.length?`<div class="row"><button class="btn alt" type="button" id="nCp">คัดลอกรายชื่อและรหัส</button><span class="note no">รหัสแสดงครั้งนี้ครั้งเดียว ระบบไม่เก็บรหัสไว้ คัดลอกเก็บก่อนออกจากหน้านี้</span></div><div class="slips" style="margin-top:10px">${ok.map(x=>`<div class="slip"><b>${esc(x.name)}</b><br>ชั้น ${esc(x.cls)} เลขที่ ${esc(x.no)}<br>เลขประจำตัว: <b>${esc(x.sid)}</b><br>รหัส: <b class="pw">${x.pw}</b></div>`).join('')}</div>`:'';
+  if(ok.length)$('nCp').onclick=()=>csvCopy([['เลขประจำตัว','ชื่อ','ชั้น','เลขที่','รหัส'],...ok.map(x=>[x.sid,x.name,x.cls,x.no,x.pw])])}}
+init();
 })();
 </script>
 </body>
