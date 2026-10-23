@@ -433,7 +433,7 @@ let ACT=null;try{ACT=localStorage.getItem('is2active')}catch(e){}
 const LK=ACT?'is2studio_'+ACT:'is2studio';
 let S={};try{S=JSON.parse(localStorage.getItem(LK)||'{}')}catch(e){}
 const save=()=>{try{localStorage.setItem(LK,JSON.stringify(S))}catch(e){};if(window.IS2push)window.IS2push()};
-const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1800)};
+const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),Math.max(1800,t.length*60))};
 async function copy(text,html){try{if(html&&window.ClipboardItem){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})])}else await navigator.clipboard.writeText(text);toast('คัดลอกแล้ว')}
  catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('คัดลอกแล้ว')}catch(_){toast('คัดลอกไม่ได้ ลองเลือกข้อความเอง')}t.remove()}}
 const seg=window.Intl&&Intl.Segmenter?new Intl.Segmenter('th',{granularity:'word'}):null;
@@ -611,14 +611,15 @@ window.IS2={S:()=>S,LK,ACT,go,wc,prog,CH,esc,toast,copy};
 const $=id=>document.getElementById(id),I=window.IS2,esc=I.esc;
 const DOM='students.is2wpp.app';let DB=null,U=null,ME=null,TEACHER=false,timer=null,lastSync=null;
 const acct=$('acct');
-function chip(){if(!DB){acct.innerHTML='<span class="sync">งานเก็บในเครื่องนี้</span>';return}
+function chip(){if(!DB){acct.innerHTML='<span class="sync">งานเก็บในเครื่องนี้</span><button type="button" class="pri" id="inBtn">เข้าสู่ระบบ</button>';$('inBtn').onclick=()=>{if(DB){$('loginM').hidden=false;return}I.toast(NOCFG||'กำลังเชื่อมต่อระบบ ลองอีกครั้งใน 2–3 วินาที')};return}
  if(!U){acct.innerHTML='<span class="sync">ยังไม่ได้เข้าสู่ระบบ · งานเก็บในเครื่องนี้</span><button type="button" class="pri" id="inBtn">เข้าสู่ระบบ</button>';$('inBtn').onclick=()=>{$('loginM').hidden=false;$('lgId').focus()};return}
  const who=TEACHER?'ครู':(ME?ME.name.split(' ').slice(-2).join(' '):'');
  acct.innerHTML=`<span class="who">${esc(who)}</span><span class="sync" id="syncS">${TEACHER?'':lastSync?'บันทึกขึ้นระบบแล้ว '+lastSync:'เชื่อมต่อแล้ว'}</span><button type="button" id="outBtn">ออกจากระบบ</button>`;$('outBtn').onclick=logout}
 function load(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+let NOCFG='';
 async function init(){chip();let cfg=null;
- try{const r=await fetch('config.json',{cache:'no-store'});if(r.ok)cfg=(await r.json()).firebase}catch(e){}
- if(!cfg||!cfg.apiKey)return;
+ for(const u of ['config.json','/math-m1/config.json']){try{const r=await fetch(u,{cache:'no-store'});if(r.ok){const j=await r.json();if(j&&j.firebase&&j.firebase.apiKey){cfg=j.firebase;break}}}catch(e){}}
+ if(!cfg){NOCFG=location.protocol==='file:'||!/github\.io$/.test(location.hostname)?'หน้านี้เป็นหน้าพรีวิว ระบบเข้าสู่ระบบใช้ได้บนเว็บจริง mathdevth.github.io/is-m2/':'ยังเชื่อมต่อ Firebase ไม่ได้: ไม่พบค่า firebase ใน config.json ของ is-m2 และของ math-m1';chip();return}
  const v='https://cdn.jsdelivr.net/npm/firebase@10.12.2/';
  try{await load(v+'firebase-app-compat.js');await load(v+'firebase-auth-compat.js');await load(v+'firebase-firestore-compat.js')}catch(e){return}
  firebase.initializeApp(cfg);const fs=firebase.firestore();
