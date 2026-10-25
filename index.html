@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>IS2 สตูดิโอนักค้นคว้า</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +18,7 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0e1c20;--sheet:#152a30;--ink:#e3eff0;--mute:#93aab0;--line:#2a454c;--teal:#4cc6be;--tealsoft:#173c3d;--mark:#f2c94c;--marksoft:#3b3418;--coral:#ff8a7e;--okc:#59d18e;color-scheme:dark}}
 :root[data-theme="dark"]{--paper:#0e1c20;--sheet:#152a30;--ink:#e3eff0;--mute:#93aab0;--line:#2a454c;--teal:#4cc6be;--tealsoft:#173c3d;--mark:#f2c94c;--marksoft:#3b3418;--coral:#ff8a7e;--okc:#59d18e;color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--body);
   background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:28px 28px;background-attachment:fixed}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--sheet)}
@@ -112,6 +118,32 @@ textarea{min-height:90px;resize:vertical;line-height:1.7}
 .cue{border-radius:12px;padding:14px;background:var(--marksoft);min-height:90px;font-size:1.05rem}
 .steps{display:flex;gap:6px;flex-wrap:wrap}.steps span{font-size:13px;border-radius:99px;padding:2px 10px;border:1px solid var(--line)}
 .steps span.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.aiwide{margin-top:16px;width:100%;border-style:dashed}
+.rules{width:100%;border-collapse:collapse;font-size:15px}.rules th,.rules td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}.rules th{background:var(--paper);font-family:var(--display);font-weight:500}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.pc2{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.pc2 pre{white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;background:var(--paper);border-radius:8px;padding:10px;margin:0;flex:1}
+.pc2 .u{font-family:var(--mono);font-size:12px;color:var(--teal)}
+.st{align-self:flex-start;font-size:12px;border-radius:99px;padding:1px 9px;font-weight:600;white-space:nowrap}.st.ready{background:var(--tealsoft);color:var(--teal)}.st.alpha{background:var(--marksoft);color:var(--ink)}.st.dev{background:var(--paper);color:var(--mute);border:1px solid var(--line)}
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.tool{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--sheet);display:flex;flex-direction:column;gap:4px}
+.tool{text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}.tool:hover{border-color:var(--teal);transform:translateY(-2px)}
+.tool .th{display:flex;align-items:center;gap:10px}.tool .th b{flex:1}.tool .ext{color:var(--teal);font-weight:700}
+.lg{width:36px;height:36px;flex:none;border-radius:9px;padding:6px;background:var(--paper)}.lg.gl{color:var(--teal);background:var(--tealsoft)}
+.log{width:100%;border-collapse:collapse;font-size:14px}.log th,.log td{border:1px solid var(--line);padding:6px;vertical-align:top}.log input,.log textarea{width:100%;border:0;background:transparent;min-height:0;padding:2px;font-size:14px}
+.tw2{overflow-x:auto}
+.aitip{border:1px dashed var(--teal);border-radius:10px;padding:8px 12px;font-size:14px;background:var(--tealsoft)}
+.aitip button{background:none;border:0;color:var(--teal);font-weight:700;cursor:pointer;padding:0;text-decoration:underline}
+.acct{display:flex;align-items:center;gap:8px;font-size:14px}
+.acct .who{font-weight:600}.acct .sync{font-size:12.5px;color:var(--mute)}
+.acct button{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:4px 12px;cursor:pointer}
+.acct button.pri{background:var(--teal);color:#fff;border-color:var(--teal)}
+.modal{position:fixed;inset:0;background:rgba(10,30,36,.45);display:grid;place-items:center;z-index:30;padding:max(16px,env(safe-area-inset-left,0px))}
+.modal .card{width:min(420px,100%);display:flex;flex-direction:column;gap:12px}
+.ttab{width:100%;border-collapse:collapse;font-size:14px}.ttab th,.ttab td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}.ttab th{background:var(--paper)}
+.ttab td.n{text-align:right;font-variant-numeric:tabular-nums}
+.slips{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}.slip{border:1px dashed var(--ink);border-radius:8px;padding:10px;font-size:14px}.slip b.pw{font-family:var(--mono);font-size:18px}
+.viewer{white-space:pre-wrap}
 footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;border-top:1px solid var(--line);padding-top:16px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--sheet);border-radius:99px;padding:8px 18px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20}
 .toast.on{opacity:1}
@@ -119,6 +151,8 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 .wsg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}.wsl{display:block;padding:10px 12px;border:1px solid var(--line,#ddd);border-radius:12px;text-decoration:none;color:inherit}.wsl:hover{border-color:currentColor}.wsl .no{display:block;font-size:12px;opacity:.7}.wsl.all{padding:6px 12px}
 </style>
+</head>
+<body>
 
 <div class="wrap">
 <header class="top"><div class="topin">
@@ -128,7 +162,10 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
     <button type="button" data-go="u1"><small>01</small>โลกของรายงาน</button>
     <button type="button" data-go="u2"><small>02</small>เรียงร้อยถ้อยคำ</button>
     <button type="button" data-go="u3"><small>03</small>เล่าสู่กันฟัง</button>
+    <button type="button" data-go="ai"><small>+</small>AI และเครื่องมือ</button>
+    <button type="button" data-go="teacher" id="navT" hidden>ครู</button>
   </nav>
+  <div class="acct" id="acct"></div>
 </div></header>
 
 <!-- ===== ภาพรวม ===== -->
@@ -148,6 +185,7 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
     <button class="room" type="button" data-go="u2"><span class="no">ห้อง 02 · 20 ชั่วโมง · สัปดาห์ 4–13</span><h3>เรียงร้อยถ้อยคำ</h3><p>เขียนส่วนเนื้อหา ส่วนอ้างอิง ส่วนนำ แล้วตรวจสอบรายงานให้รอบด้าน</p><div class="bar"><i id="p-u2"></i></div><span class="pc" id="t-u2"></span></button>
     <button class="room" type="button" data-go="u3"><span class="no">ห้อง 03 · 14 ชั่วโมง · สัปดาห์ 14–20</span><h3>เล่าสู่กันฟัง</h3><p>ออกแบบโพสเตอร์ ซ้อมนำเสนอด้วยวาจา และขึ้นเวทีไอเดีย</p><div class="bar"><i id="p-u3"></i></div><span class="pc" id="t-u3"></span></button>
   </div>
+  <button class="room aiwide" type="button" data-go="ai"><span class="no">ใช้ได้ทุกหน่วย</span><h3>AI และเครื่องมือ</h3><p>คำสั่งสำเร็จรูปที่ให้ AI ช่วยคิดแต่ไม่ทำแทน บันทึกการใช้ AI การอ้างอิง AI และโปรแกรมที่ใช้ทำรายงานและโพสเตอร์</p></button>
   <section class="card" id="worksheets" style="margin-top:18px">
     <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h2>ใบงาน (PDF)</h2><a class="wsl all" href="worksheets/is2-worksheets-all.pdf" target="_blank" rel="noopener"><b>⬇ รวมทุกใบ</b></a></div>
     <p class="note" style="margin:6px 0 12px">พิมพ์หรือคัดลงสมุด เขียนชื่อ-เลขที่ทุกหน้า ทำคู่กับเครื่องมือในห้องเรียนบนเว็บ แล้วถ่ายรูปส่งในไก่ทวง</p>
@@ -202,7 +240,7 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
       <textarea id="slangIn" style="margin-top:8px">นักเรียนส่วนใหญ่ชอบกินขนมหวานมาก ๆ เลย ซึ่งมันไม่ค่อยดีต่อสุขภาพเท่าไหร่</textarea><div id="slangOut" class="doc" style="margin-top:8px;padding:14px"></div></div></div>
   </section>
   <section id="u1c" class="desk" hidden>
-    <div class="card stack"><h3>จากเรื่องกว้าง สู่ประเด็นที่ศึกษาได้</h3>
+    <div class="card stack"><h3>จากเรื่องกว้าง สู่ประเด็นที่ศึกษาได้</h3><p class="aitip">คิดไม่ออก? <button type="button" data-ai="p1">ใช้คำสั่ง AI ช่วยแคบประเด็น</button></p>
       <label class="f" for="nw1">เรื่องที่สนใจ (กว้าง)<em>เช่น ขยะ อาหาร เกม สุขภาพ</em><input id="nw1" class="in" data-s></label>
       <label class="f" for="nw2">แคบลง: เกี่ยวกับใคร / ที่ไหน<em>เช่น ขยะพลาสติกในโรงเรียนของเรา</em><input id="nw2" class="in" data-s></label>
       <label class="f" for="nw3">ประเด็นที่อยากรู้ (ตั้งเป็นคำถาม)<em>เช่น ขยะพลาสติกในโรงเรียนมาจากไหนมากที่สุด และลดได้อย่างไร</em><input id="nw3" class="in" data-s></label>
@@ -244,7 +282,7 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
   </div>
   <section id="u2a" class="desk" hidden>
     <div class="card stack"><div class="row"><h3>ห้องเขียน</h3><select id="chSel" class="in" style="width:auto"></select></div>
-      <p class="note" id="chHint"></p>
+      <p class="note" id="chHint"></p><p class="aitip">เขียนเสร็จแล้ว <button type="button" data-ai="p4">ให้ AI ชี้คำภาษาพูดและคำผิด</button> (ไม่ให้ AI เขียนแทน)</p>
       <textarea id="chText" style="min-height:340px"></textarea>
       <div class="row"><span class="chip" id="chWc">0 คำ</span><button class="btn alt" type="button" id="chCopy">คัดลอกบทนี้</button><button class="btn tl2" type="button" id="allCopy">คัดลอกรายงานทั้งเล่ม</button></div>
     </div>
@@ -253,7 +291,7 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
   </section>
   <section id="u2b" class="desk" hidden>
     <div class="card stack"><h3>สร้างรายการอ้างอิง</h3><p class="note">รูปแบบ APA ฉบับที่ 7 ที่ใช้กันทั่วไปในรายงานภาษาไทย</p>
-      <div class="row" id="ctType"><button class="btn" data-ct="web" type="button">เว็บไซต์</button><button class="btn alt" data-ct="book" type="button">หนังสือ</button><button class="btn alt" data-ct="jour" type="button">บทความวารสาร</button><button class="btn alt" data-ct="int" type="button">สัมภาษณ์</button></div>
+      <div class="row" id="ctType"><button class="btn" data-ct="web" type="button">เว็บไซต์</button><button class="btn alt" data-ct="book" type="button">หนังสือ</button><button class="btn alt" data-ct="jour" type="button">บทความวารสาร</button><button class="btn alt" data-ct="int" type="button">สัมภาษณ์</button><button class="btn alt" data-ct="ai" type="button">AI</button></div>
       <div id="ctForm" class="stack"></div>
       <div class="row"><button class="btn tl2" type="button" id="ctAdd">เพิ่มเข้ารายการอ้างอิง</button></div>
     </div>
@@ -308,7 +346,7 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
     <div class="stack" style="position:sticky;top:80px"><div class="poster" id="pst"></div><p class="note" id="pstWarn"></p></div>
   </section>
   <section id="u3b" class="desk" hidden>
-    <div class="card stack"><h3>บทพูด 3 ช่วง</h3>
+    <div class="card stack"><h3>บทพูด 3 ช่วง</h3><p class="aitip"><button type="button" data-ai="p7">ให้ AI สวมบทผู้ฟังถามคำถาม</button> แล้วจดคำถามที่ตอบยากไว้ในช่องด้านล่าง</p>
       <label class="f" for="sp-o">เปิด (30 วินาที)<em>ทักทาย แนะนำตัว แล้วดึงความสนใจด้วยคำถามหรือข้อมูลที่น่าแปลกใจ</em><textarea id="sp-o" data-s></textarea></label>
       <label class="f" for="sp-b">เนื้อหา (2–3 นาที)<em>ที่มา วิธีศึกษา สิ่งที่ค้นพบ เล่าเรียงลำดับ ชี้ไปที่โพสเตอร์หรือสไลด์</em><textarea id="sp-b" data-s style="min-height:140px"></textarea></label>
       <label class="f" for="sp-c">ปิด (30 วินาที)<em>สรุปข้อค้นพบสำคัญ 1 ประโยค ข้อเสนอแนะ และขอบคุณ</em><textarea id="sp-c" data-s></textarea></label>
@@ -340,6 +378,55 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
   </section>
 </main>
 
+<!-- ===== AI และเครื่องมือ ===== -->
+<main id="v-ai" hidden>
+  <div class="rhead"><span class="big">AI</span><div><h2>ใช้ AI อย่างนักค้นคว้า</h2><p>AI เป็นผู้ช่วยคิด ช่วยถาม และช่วยตรวจได้ดี แต่รายงานต้องเป็นความคิดและสำนวนของเรา และข้อมูลทุกชิ้นต้องตรวจกับแหล่งจริง</p>
+  <div class="lo"><b>กติกา 3 ข้อ</b> 1) AI ไม่เขียนแทนเรา 2) ทุกข้อมูลที่ได้จาก AI ต้องตรวจกับแหล่งที่น่าเชื่อถือก่อนใช้ 3) ใช้ AI ตรงไหน บันทึกและบอกครูทุกครั้ง</div></div></div>
+  <div class="tabs" role="tablist" data-room="ai">
+    <button role="tab" data-t="aia"><span class="h">A</span>ใช้ได้ / ไม่ควรใช้</button>
+    <button role="tab" data-t="aib"><span class="h">B</span>คำสั่งสำเร็จรูป</button>
+    <button role="tab" data-t="aic"><span class="h">C</span>บันทึกการใช้ AI</button>
+    <button role="tab" data-t="aid"><span class="h">D</span>โปรแกรมที่ใช้</button>
+  </div>
+  <section id="aia" hidden>
+    <div class="card tw2"><table class="rules"><tr><th>หน่วย</th><th>ให้ AI ช่วยได้</th><th>ไม่ควรให้ AI ทำ</th></tr>
+    <tr><td>01 โลกของรายงาน</td><td>ระดมความคิดหัวข้อ ช่วยแคบประเด็น ตั้งคำถาม ตรวจว่าวัตถุประสงค์ชัดเจนไหม</td><td>เลือกเรื่องแทนกลุ่ม เขียนโครงร่างทั้งหมดให้</td></tr>
+    <tr><td>02 เรียงร้อยถ้อยคำ</td><td>อธิบายเนื้อหาที่อ่านแล้วไม่เข้าใจ ชี้คำภาษาพูดและคำสะกดผิด แนะนำคำค้นหา</td><td>เขียนเนื้อหาแทน คัดลอกคำตอบ AI ไปวางในรายงาน ใช้ข้อมูลหรือแหล่งอ้างอิงจาก AI โดยไม่ตรวจ</td></tr>
+    <tr><td>03 เล่าสู่กันฟัง</td><td>สวมบทผู้ฟังแล้วถามคำถามให้ซ้อมตอบ ช่วยย่อข้อความโพสเตอร์ให้สั้นลง ให้ความเห็นต่อบทพูด</td><td>เขียนบทพูดทั้งหมดให้ ใช้ภาพที่ AI สร้างโดยไม่บอกที่มา</td></tr></table></div>
+    <div class="card" style="margin-top:14px"><h3>ทำไม AI ถึงต้องตรวจ</h3><ul style="margin:6px 0 0;padding-left:20px"><li>AI ตอบได้คล่องแม้ข้อมูลผิด บางครั้งแต่งตัวเลข ชื่อหนังสือ หรือลิงก์ที่ไม่มีอยู่จริงขึ้นมา</li><li>AI ไม่รู้ข้อมูลของโรงเรียนและชุมชนเรา ข้อมูลจริงได้จากการสำรวจ สัมภาษณ์ และสังเกตด้วยตัวเอง</li><li>ถ้า AI ให้ชื่อแหล่งข้อมูล ให้ค้นหาและเปิดอ่านแหล่งนั้นจริงก่อน แล้วอ้างอิงแหล่งนั้น ไม่อ้างอิง AI แทน</li></ul></div>
+  </section>
+  <section id="aib" hidden>
+    <p class="note" style="margin-bottom:10px">กดคัดลอกแล้ววางในแชต AI ที่ใช้ แก้ข้อความใน [วงเล็บ] เป็นเรื่องของกลุ่ม คำสั่งทุกข้อสั่งให้ AI ถามและชี้แนะ ไม่ใช่เขียนแทน</p>
+    <div class="pgrid" id="pgrid"></div>
+  </section>
+  <section id="aic" class="stack" hidden>
+    <div class="card stack"><div class="row"><h3>บันทึกการใช้ AI ของกลุ่ม</h3><button class="btn alt" type="button" id="logAdd">+ เพิ่มรายการ</button><button class="btn tl2" type="button" id="logCopy">คัดลอกเป็นภาคผนวก</button></div>
+      <p class="note">ใส่ในภาคผนวกของรายงาน เป็นหลักฐานว่าใช้ AI อย่างซื่อสัตย์</p>
+      <div class="tw2"><table class="log" id="logT"></table></div></div>
+    <div class="card"><h3>อ้างอิงเมื่อใช้ AI (APA 7)</h3><p class="note">ใช้เมื่อยกข้อความจาก AI มาแสดงในรายงานจริง ๆ เช่น ในภาคผนวก หรือเมื่อศึกษาเรื่องคำตอบของ AI เอง</p>
+      <p class="cite" style="margin-top:8px">ชื่อบริษัทผู้พัฒนา. (ปี ค.ศ.). <i>ชื่อโปรแกรม</i> (รุ่นหรือวันที่ใช้) [โมเดลภาษาขนาดใหญ่]. URL</p>
+      <p class="note" style="margin-top:8px">ตัวอย่าง: <span class="cite" style="display:inline-block;padding:2px 8px">Google. (2026). <i>Gemini</i> (23 ตุลาคม 2569) [โมเดลภาษาขนาดใหญ่]. https://gemini.google.com</span><br>อ้างอิงในเนื้อหา: (Google, 2026) · สร้างรายการนี้ได้ที่ห้อง 02 › อ้างอิง › AI</p></div>
+  </section>
+  <section id="aid" class="stack" hidden>
+    <div class="card"><h3>โปรแกรมหลักที่แนะนำ</h3><div class="tools" style="margin-top:10px"><a class="tool" href="https://docs.google.com/" target="_blank" rel="noopener"><span class="th"><svg class="lg" viewBox="0 0 24 24" role="img" aria-label="โลโก้ Google Docs"><path fill="#4285F4" d="M14.727 6.727H14V0H4.91c-.905 0-1.637.732-1.637 1.636v20.728c0 .904.732 1.636 1.636 1.636h14.182c.904 0 1.636-.732 1.636-1.636V6.727h-6zm-.545 10.455H7.09v-1.364h7.09v1.364zm2.727-3.273H7.091v-1.364h9.818v1.364zm0-3.273H7.091V9.273h9.818v1.363zM14.727 6h6l-6-6v6z"/></svg><b>Google Docs</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">พิมพ์รายงาน ทำงานร่วมกันในกลุ่มพร้อมกัน บันทึกอัตโนมัติ ทำสารบัญได้ รองรับภาษาไทยดี</span><span class="st ready">ใช้ได้ทันที</span></a><a class="tool" href="https://www.microsoft.com/microsoft-365/word" target="_blank" rel="noopener"><span class="th"><svg class="lg gl" viewBox="0 0 24 24" role="img" aria-label="ไอคอน Microsoft Word" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5M9 12h8M9 16h8"/></svg><b>Microsoft Word</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">พิมพ์รายงานในห้องคอม หรือใช้ Word บนเว็บด้วยบัญชี Microsoft ของโรงเรียน</span><span class="st ready">ใช้ได้ทันที</span></a><a class="tool" href="https://www.libreoffice.org/discover/writer/" target="_blank" rel="noopener"><span class="th"><svg class="lg" viewBox="0 0 24 24" role="img" aria-label="โลโก้ LibreOffice Writer"><path fill="#083FA6" d="M22 0v7l-7-7h7zm0 9v12c0 1.662-1.338 3-3 3H5c-1.662 0-3-1.338-3-3V3c0-1.662 1.338-3 3-3h8l9 9zM6 10h5V9H6v1zm0 2h5v-1H6v1zm0 2h5v-1H6v1zm5 3H6v1h5v-1zm7-2H6v1h12v-1zm0-6h-6v5h6V9zm-1.5 2a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM14 11l-1 2h3l-2-2z"/></svg><b>LibreOffice Writer</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">โปรแกรมพิมพ์เอกสารโอเพนซอร์สที่เสร็จสมบูรณ์แล้ว ฟรี เปิด/บันทึก .docx ได้ รองรับภาษาไทย</span><span class="st ready">ใช้ได้ทันที · โอเพนซอร์ส</span></a><a class="tool" href="https://www.canva.com/" target="_blank" rel="noopener"><span class="th"><svg class="lg" viewBox="0 0 24 24" role="img" aria-label="โลโก้ Canva"><path fill="#00C4CC" d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zM6.962 7.68c.754 0 1.337.549 1.405 1.2.069.583-.171 1.097-.822 1.406-.343.171-.48.172-.549.069-.034-.069 0-.137.069-.206.617-.514.617-.926.548-1.508-.034-.378-.308-.618-.583-.618-1.2 0-2.914 2.674-2.674 4.629.103.754.549 1.646 1.509 1.646.308 0 .65-.103.96-.24.5-.264.799-.47 1.097-.8-.073-.885.704-2.046 1.851-2.046.515 0 .926.205.96.583.068.514-.377.582-.514.582s-.378-.034-.378-.17c-.034-.138.309-.07.275-.378-.035-.206-.24-.274-.446-.274-.72 0-1.131.994-1.029 1.611.035.275.172.549.447.549.205 0 .514-.31.617-.755.068-.308.343-.514.583-.514.102 0 .17.034.205.171v.138c-.034.137-.137.548-.102.651 0 .069.034.171.17.171.092 0 .436-.18.777-.459.117-.59.253-1.298.253-1.357.034-.24.137-.48.617-.48.103 0 .171.034.205.171v.138l-.136.617c.445-.583 1.097-.994 1.508-.994.172 0 .309.102.309.274 0 .103 0 .274-.069.446-.137.377-.309.96-.412 1.474 0 .137.035.274.207.274.171 0 .685-.206 1.096-.754l.007-.004c-.002-.068-.007-.134-.007-.202 0-.411.035-.754.104-.994.068-.274.411-.514.617-.514.103 0 .205.069.205.171 0 .035 0 .103-.034.137-.137.446-.24.857-.24 1.269 0 .24.034.582.102.788 0 .034.035.069.07.069.068 0 .548-.445.89-1.028-.308-.206-.48-.549-.48-.96 0-.72.446-1.097.858-1.097.343 0 .617.24.617.72 0 .308-.103.65-.274.96h.102a.77.77 0 0 0 .584-.24.293.293 0 0 1 .134-.117c.335-.425.83-.74 1.41-.74.48 0 .924.205.959.582.068.515-.378.618-.515.618l-.002-.002c-.138 0-.377-.035-.377-.172 0-.137.309-.068.274-.376-.034-.206-.24-.275-.446-.275-.686 0-1.13.891-1.028 1.611.034.275.171.583.445.583.206 0 .515-.308.652-.754.068-.274.343-.514.583-.514.103 0 .17.034.205.171 0 .069 0 .206-.137.652-.17.308-.171.48-.137.617.034.274.171.48.309.583.034.034.068.102.068.102 0 .069-.034.138-.137.138-.034 0-.068 0-.103-.035-.514-.205-.72-.548-.789-.891-.205.24-.445.377-.72.377-.445 0-.89-.411-.96-.926a1.609 1.609 0 0 1 .075-.649c-.203.13-.422.203-.623.203h-.17c-.447.652-.927 1.098-1.27 1.303a.896.896 0 0 1-.377.104c-.068 0-.171-.035-.205-.104-.095-.152-.156-.392-.193-.667-.481.527-1.145.805-1.453.805-.343 0-.548-.206-.582-.55v-.376c.102-.754.377-1.2.377-1.337a.074.074 0 0 0-.069-.07c-.24 0-1.028.824-1.166 1.373l-.103.445c-.068.309-.377.515-.582.515-.103 0-.172-.035-.206-.172v-.137l.046-.233c-.435.31-.87.508-1.075.508-.308 0-.48-.172-.514-.412-.206.274-.445.412-.754.412-.352 0-.696-.24-.862-.593-.244.275-.523.553-.852.764-.48.309-1.028.549-1.68.549-.582 0-1.097-.309-1.371-.583-.412-.377-.651-.96-.686-1.509-.205-1.68.823-3.84 2.4-4.8.378-.205.755-.343 1.132-.343zm9.77 3.291c-.104 0-.172.172-.172.343 0 .274.137.583.309.755a1.74 1.74 0 0 0 .102-.583c0-.343-.137-.515-.24-.515z"/></svg><b>Canva</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">ออกแบบโพสเตอร์และสไลด์ มีแม่แบบและฟอนต์ไทย</span><span class="st ready">ใช้ได้ทันที</span></a><a class="tool" href="https://forms.google.com/" target="_blank" rel="noopener"><span class="th"><svg class="lg" viewBox="0 0 24 24" role="img" aria-label="โลโก้ Google Forms"><path fill="#7248B9" d="M14.727 6h6l-6-6v6zm0 .727H14V0H4.91c-.905 0-1.637.732-1.637 1.636v20.728c0 .904.732 1.636 1.636 1.636h14.182c.904 0 1.636-.732 1.636-1.636V6.727h-6zM7.91 17.318a.819.819 0 1 1 .001-1.638.819.819 0 0 1 0 1.638zm0-3.273a.819.819 0 1 1 .001-1.637.819.819 0 0 1 0 1.637zm0-3.272a.819.819 0 1 1 .001-1.638.819.819 0 0 1 0 1.638zm9 6.409h-6.818v-1.364h6.818v1.364zm0-3.273h-6.818v-1.364h6.818v1.364zm0-3.273h-6.818V9.273h6.818v1.363z"/></svg><b>Google Forms</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">ทำแบบสอบถามเก็บข้อมูลสำหรับบทที่ 3–4 แล้วสรุปเป็นกราฟให้</span><span class="st ready">ใช้ได้ทันที</span></a><a class="tool" href="https://slides.google.com/" target="_blank" rel="noopener"><span class="th"><svg class="lg" viewBox="0 0 24 24" role="img" aria-label="โลโก้ Google Slides"><path fill="#FBBC04" d="M16.09 15.273H7.91v-4.637h8.18v4.637zm1.728-8.523h2.91v15.614c0 .904-.733 1.636-1.637 1.636H4.909a1.636 1.636 0 0 1-1.636-1.636V1.636C3.273.732 4.005 0 4.909 0h9.068v6.75h3.841zm-.363 2.523H6.545v7.363h10.91V9.273zm-2.728-5.979V6h6.001l-6-6v3.294z"/></svg><b>Google Slides</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">ทำสไลด์ประกอบการนำเสนอด้วยวาจา ทำร่วมกันในกลุ่มได้</span><span class="st ready">ใช้ได้ทันที</span></a></div></div>
+    <div class="card"><h3>เครื่องมือโอเพนซอร์สที่น่าลอง: ArtCraft</h3><p class="note">ชุดโปรแกรมฟรีและเปิดเผยซอร์สโค้ด ใช้ได้บน Windows, macOS, Linux และบางตัวบนเว็บ ทุกตัวยังเป็นรุ่นทดลองหรือกำลังพัฒนา ห้ามใช้เป็นโปรแกรมเดียวสำหรับงานที่ต้องส่ง สำรองไฟล์ไว้ใน Word หรือ Google Docs ด้วยเสมอ (สถานะตามหน้าเว็บ ArtCraft ณ ต.ค. 2569)</p>
+      <div class="tools" style="margin-top:10px"><a class="tool" href="https://getartcraft.com/apps/wordcraft" target="_blank" rel="noopener"><span class="th"><svg class="lg gl" viewBox="0 0 24 24" role="img" aria-label="ไอคอน WordCraft" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5M9 12h8M9 16h8"/></svg><b>WordCraft</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">โปรแกรมพิมพ์เอกสาร เปิด/บันทึก .docx ได้ มีสารบัญ เชิงอรรถ และบรรณานุกรม APA ยังไม่ระบุว่ารองรับภาษาไทย ลองพิมพ์ไทยก่อนใช้</span><span class="st dev">กำลังพัฒนา · รุ่น 0.8</span></a><a class="tool" href="https://getartcraft.com/apps" target="_blank" rel="noopener"><span class="th"><svg class="lg gl" viewBox="0 0 24 24" role="img" aria-label="ไอคอน PdfCraft" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><path d="M7 3h8l4 4v14H7z"/><path d="M4 7v15h11"/><path d="M10 13h6M10 17h4"/></svg><b>PdfCraft</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">อ่าน รวม แยกไฟล์ PDF เหมาะกับรวมเล่มรายงานก่อนส่ง</span><span class="st alpha">รุ่นทดลองแรก (Early alpha)</span></a><a class="tool" href="https://getartcraft.com/apps" target="_blank" rel="noopener"><span class="th"><svg class="lg gl" viewBox="0 0 24 24" role="img" aria-label="ไอคอน PhotoCraft" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-6-6-8 8"/></svg><b>PhotoCraft</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">แต่งรูปสำหรับโพสเตอร์ ครอบตัด ปรับแสง</span><span class="st alpha">รุ่นทดลองแรก (Early alpha)</span></a><a class="tool" href="https://getartcraft.com/apps" target="_blank" rel="noopener"><span class="th"><svg class="lg gl" viewBox="0 0 24 24" role="img" aria-label="ไอคอน DesignCraft" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M10 9v12"/></svg><b>DesignCraft</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">จัดหน้าสิ่งพิมพ์ เช่น โพสเตอร์</span><span class="st dev">กำลังพัฒนา</span></a><a class="tool" href="https://getartcraft.com/apps" target="_blank" rel="noopener"><span class="th"><svg class="lg gl" viewBox="0 0 24 24" role="img" aria-label="ไอคอน DeckCraft" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/></svg><b>DeckCraft</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">ทำสไลด์นำเสนอ</span><span class="st dev">กำลังพัฒนา</span></a><a class="tool" href="https://getartcraft.com/apps" target="_blank" rel="noopener"><span class="th"><svg class="lg gl" viewBox="0 0 24 24" role="img" aria-label="ไอคอน GridCraft" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg><b>GridCraft</b><span class="ext" aria-hidden="true">↗</span></span><span class="note">ตารางคำนวณ สรุปข้อมูลแบบสอบถาม</span><span class="st dev">กำลังพัฒนา</span></a></div></div>
+  </section>
+</main>
+
+<!-- ===== ครู ===== -->
+<main id="v-teacher" hidden>
+  <div class="rhead"><span class="big">T</span><div><h2>ห้องครู</h2><p>ดูความคืบหน้าของนักเรียน เปิดอ่านงาน และสร้างบัญชีนักเรียน</p></div></div>
+  <div class="tabs" id="tTabs"><button type="button" data-tt="list" aria-selected="true">นักเรียนและงาน</button><button type="button" data-tt="new" aria-selected="false">สร้างบัญชีนักเรียน</button></div>
+  <div id="tBody"></div>
+</main>
+<div class="modal" id="loginM" hidden><form class="card" id="loginF" autocomplete="on"><h3>เข้าสู่ระบบ</h3><p class="note">นักเรียนใช้เลขประจำตัวและรหัสที่ครูแจก · ครูใช้อีเมล</p>
+  <label class="f" for="lgId">เลขประจำตัว หรืออีเมลครู<input id="lgId" class="in" autocomplete="username" required></label>
+  <label class="f" for="lgPw">รหัส<input id="lgPw" class="in" type="password" autocomplete="current-password" required></label>
+  <p class="no" id="lgErr" hidden></p>
+  <div class="row"><button class="btn tl2" type="submit" id="lgGo">เข้าสู่ระบบ</button><button class="btn alt" type="button" id="lgX">ยกเลิก</button></div></form></div>
+<div class="modal" id="viewM" hidden><div class="card" style="width:min(820px,100%);max-height:88vh;overflow:auto"><div class="row"><h3 id="vmT" style="flex:1"></h3><button class="btn alt" type="button" id="vmX">ปิด</button></div><div id="vmB" class="doc viewer"></div></div></div>
+
 <footer><span>รายวิชา I20202 การสื่อสารและการนำเสนอ (IS2) · โรงเรียนวังโพรงพิทยาคม</span><span>ครูคุ้ม อชิตพล บุณรัตน์ · <a href="https://mathdevth.github.io/" style="color:inherit">mathdevth.github.io</a></span></footer>
 </div>
 <div class="toast" id="toast" role="status"></div>
@@ -348,9 +435,11 @@ footer{margin-top:40px;color:var(--mute);font-size:14px;display:flex;gap:10px;fl
 (function(){
 const $=id=>document.getElementById(id),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let S={};try{S=JSON.parse(localStorage.getItem('is2studio')||'{}')}catch(e){}
-const save=()=>{try{localStorage.setItem('is2studio',JSON.stringify(S))}catch(e){}};
-const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1800)};
+let ACT=null;try{ACT=localStorage.getItem('is2active')}catch(e){}
+const LK=ACT?'is2studio_'+ACT:'is2studio';
+let S={};try{S=JSON.parse(localStorage.getItem(LK)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(LK,JSON.stringify(S))}catch(e){};if(window.IS2push)window.IS2push()};
+const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),Math.max(1800,t.length*60))};
 async function copy(text,html){try{if(html&&window.ClipboardItem){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})])}else await navigator.clipboard.writeText(text);toast('คัดลอกแล้ว')}
  catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('คัดลอกแล้ว')}catch(_){toast('คัดลอกไม่ได้ ลองเลือกข้อความเอง')}t.remove()}}
 const seg=window.Intl&&Intl.Segmenter?new Intl.Segmenter('th',{granularity:'word'}):null;
@@ -358,11 +447,10 @@ const wc=t=>{t=(t||'').trim();if(!t)return 0;if(seg){let n=0;for(const s of seg.
 const lines=t=>(t||'').split('\n').map(x=>x.trim()).filter(Boolean);
 
 /* ---------- นำทาง ---------- */
-const VIEWS=['home','u1','u2','u3'];
+const VIEWS=['home','u1','u2','u3','ai','teacher'];
 function go(v,tab){if(!VIEWS.includes(v))v='home';VIEWS.forEach(x=>$('v-'+x).hidden=x!==v);
- $$('.nav button').forEach(b=>b.toggleAttribute('aria-current',b.dataset.go===v)||b.dataset.go===v&&b.setAttribute('aria-current','page'));
  $$('.nav button').forEach(b=>b.dataset.go===v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));
- if(v!=='home'){const room=$$(`.tabs[data-room="${v}"]`)[0];const t=tab||S['tab_'+v]||room.querySelector('button').dataset.t;openTab(v,t)}
+ if(v!=='home'&&v!=='teacher'){const room=$$(`.tabs[data-room="${v}"]`)[0];const t=tab||S['tab_'+v]||room.querySelector('button').dataset.t;openTab(v,t)}
  S.view=v;save();try{history.replaceState(null,'','#'+(v==='home'?'top':v))}catch(e){}if(v==='home')progress();try{scrollTo(0,0)}catch(e){}}
 function openTab(v,t){const room=$$(`.tabs[data-room="${v}"]`)[0];$$('button',room).forEach(b=>{const on=b.dataset.t===t;b.setAttribute('aria-selected',on);$(b.dataset.t).hidden=!on});S['tab_'+v]=t;save();refresh()}
 $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));$('toHome').onclick=()=>go('home');
@@ -422,6 +510,7 @@ $('allCopy').onclick=()=>{const refs=refSorted();const t=CH.map(c=>c[1]+'\n\n'+(
 const CT={web:[['au','ผู้แต่งหรือหน่วยงาน','เช่น กรมควบคุมมลพิษ'],['y','ปี (พ.ศ. หรือ ค.ศ. ตามต้นฉบับ)','เช่น 2567'],['d','วันและเดือนที่เผยแพร่ (ถ้ามี)','เช่น 15 มกราคม'],['t','ชื่อบทความหรือหน้าเว็บ',''],['site','ชื่อเว็บไซต์',''],['url','URL','https://']],
  book:[['au','ผู้แต่ง','เช่น สมชาย ใจดี (ไม่ใส่คำนำหน้า)'],['y','ปีที่พิมพ์',''],['t','ชื่อหนังสือ',''],['ed','พิมพ์ครั้งที่ (ถ้าไม่ใช่ครั้งแรก)','เช่น 2'],['pub','สำนักพิมพ์','']],
  jour:[['au','ผู้แต่ง',''],['y','ปี',''],['t','ชื่อบทความ',''],['j','ชื่อวารสาร',''],['v','ปีที่ (ฉบับที่)','เช่น 12(2)'],['pp','เลขหน้า','เช่น 45-58'],['url','DOI หรือ URL (ถ้ามี)','']],
+ ai:[['au','บริษัทผู้พัฒนา','เช่น Google, OpenAI, Anthropic'],['y','ปี ค.ศ. ของรุ่นที่ใช้','เช่น 2026'],['t','ชื่อโปรแกรม','เช่น Gemini'],['ver','รุ่นหรือวันที่ใช้','เช่น 23 ตุลาคม 2569'],['url','URL','https://']],
  int:[['au','ผู้ให้สัมภาษณ์',''],['role','ตำแหน่งหรือบทบาท','เช่น ผู้ใหญ่บ้านหมู่ 3'],['y','ปี',''],['d','วันและเดือนที่สัมภาษณ์',''],['by','ผู้สัมภาษณ์','']]};
 let ct='web';const fv={};
 function ctForm(){$$('#ctType button').forEach(b=>b.className='btn'+(b.dataset.ct===ct?'':' alt'));
@@ -432,6 +521,7 @@ function build(type,g){const au=g('au')||'ไม่ปรากฏผู้แ�
  if(type==='web')h=`${esc(au)}. (${esc(y)}${g('d')?', '+esc(g('d')):''}). <i>${esc(g('t'))}</i>. ${esc(g('site'))}${g('site')?'. ':''}${esc(g('url'))}`;
  if(type==='book')h=`${esc(au)}. (${esc(y)}). <i>${esc(g('t'))}</i>${g('ed')?` (พิมพ์ครั้งที่ ${esc(g('ed'))})`:''}. ${esc(g('pub'))}.`;
  if(type==='jour')h=`${esc(au)}. (${esc(y)}). ${esc(g('t'))}. <i>${esc(g('j'))}</i>, <i>${esc(g('v'))}</i>, ${esc(g('pp'))}.${g('url')?' '+esc(g('url')):''}`;
+ if(type==='ai')h=`${esc(au)}. (${esc(y)}). <i>${esc(g('t'))}</i>${g('ver')?` (${esc(g('ver'))})`:''} [โมเดลภาษาขนาดใหญ่]. ${esc(g('url'))}`;
  if(type==='int'){h=`${esc(au)}${g('role')?`, ${esc(g('role'))}`:''}. (${esc(y)}${g('d')?', '+esc(g('d')):''}). <i>สัมภาษณ์</i> โดย ${esc(g('by'))}.`}
  return{html:h,txt:h.replace(/<[^>]+>/g,''),inl,key:au}}
 function ctOut(){const r=build(ct,v);$('ctOut').innerHTML=r.html;$('ctIn').textContent=r.inl}
@@ -484,6 +574,29 @@ $('tmReset').onclick=()=>{clearInterval(tmRun);tmRun=null;tmLeft=tmTotal();$('tm
 mkChk('spkChk',['พูดจบภายในเวลาที่กำหนด','เปิดเรื่องแล้วผู้ฟังอยากฟังต่อ','สบตาผู้ฟัง ไม่ก้มอ่านตลอด','เสียงดังพอ ชัดเจน ไม่เร็วเกินไป','ชี้ภาพหรือกราฟประกอบขณะพูด','ตอบคำถามได้ตรงประเด็น'],'sk');
 mkChk('pubChk',['จัดแสดงโพสเตอร์ในโรงเรียน','นำเสนอให้นักเรียนห้องอื่นหรือผู้ปกครองฟัง','เผยแพร่ทางเพจหรือช่องทางออนไลน์ของโรงเรียน','นำข้อค้นพบไปบอกคนในชุมชนที่เกี่ยวข้อง'],'pb');
 
+
+/* ---------- AI ---------- */
+const PR=[
+ ['p1','01','ช่วยแคบประเด็น','ฉันเป็นนักเรียน ม.2 กำลังทำรายงานเชิงวิชาการ กลุ่มสนใจเรื่อง [เรื่องกว้าง] ในบริบท [โรงเรียน/ชุมชนของเรา]\nอย่าเลือกหัวข้อให้ แต่ช่วยถามคำถามฉันทีละข้อ 5 ข้อ เพื่อให้ฉันแคบประเด็นลงจนได้คำถามที่ศึกษาได้ภายใน 1 ภาคเรียน'],
+ ['p2','01','ตรวจวัตถุประสงค์','นี่คือชื่อเรื่องและวัตถุประสงค์รายงานของฉัน\n[วางชื่อเรื่องและวัตถุประสงค์]\nอย่าเขียนใหม่ให้ บอกเพียงว่าแต่ละข้อชัดเจน วัดผลได้ และสอดคล้องกับชื่อเรื่องหรือไม่ พร้อมคำถามที่ช่วยให้ฉันปรับเอง'],
+ ['p3','02','อธิบายเรื่องที่อ่านไม่เข้าใจ','ฉันอ่านข้อความนี้แล้วไม่เข้าใจ: [วางข้อความสั้น ๆ]\nช่วยอธิบายแบบนักเรียน ม.2 เข้าใจ ยกตัวอย่างใกล้ตัว 1 ตัวอย่าง แล้วถามฉัน 2 ข้อเพื่อเช็กว่าเข้าใจจริง'],
+ ['p4','02','ชี้ภาษาพูดและคำผิด','ช่วยตรวจย่อหน้ารายงานเชิงวิชาการนี้ อย่าเขียนใหม่ทั้งย่อหน้า ให้ระบุเป็นข้อ ๆ ว่าคำไหนเป็นภาษาพูด คำไหนสะกดผิด และเสนอคำที่เหมาะกว่า\n[วางย่อหน้า]'],
+ ['p5','02','หาคำค้นหาที่ดี','ฉันกำลังค้นข้อมูลเรื่อง [หัวข้อย่อย] แนะนำคำค้นหาภาษาไทยและอังกฤษ 5 ชุด และบอกว่าควรหาจากแหล่งประเภทไหน (หน่วยงานรัฐ มหาวิทยาลัย วารสาร) ห้ามแต่งชื่อบทความหรือลิงก์ขึ้นเอง'],
+ ['p6','03','ย่อข้อความโพสเตอร์','ข้อความนี้จะอยู่บนโพสเตอร์ ยาวเกินไป ช่วยบอกว่าใจความสำคัญอยู่ตรงไหน และคำไหนตัดได้ ให้ฉันเป็นคนเขียนฉบับย่อเอง\n[วางข้อความ]'],
+ ['p7','03','ซ้อมตอบคำถาม','สวมบทเป็นครูและเพื่อนที่ฟังการนำเสนอรายงานเรื่อง [ชื่อเรื่อง] ซึ่งค้นพบว่า [ข้อค้นพบหลัก]\nถามคำถามฉันทีละข้อ 5 ข้อ จากง่ายไปยาก รอให้ฉันตอบก่อนถามข้อต่อไป แล้วให้คำแนะนำสั้น ๆ ต่อคำตอบของฉัน'],
+ ['p8','03','ความเห็นต่อบทพูด','นี่คือบทพูดนำเสนอ 3 นาทีของฉัน ช่วยให้ความเห็น 3 ข้อ: การเปิดน่าสนใจไหม ลำดับเข้าใจง่ายไหม การปิดจำได้ไหม อย่าเขียนบทใหม่ให้\n[วางบทพูด]']];
+$('pgrid').innerHTML=PR.map(p=>`<div class="pc2" id="pc-${p[0]}"><span class="u">หน่วย ${p[1]}</span><b>${p[2]}</b><pre>${esc(p[3])}</pre><button class="btn alt" type="button" data-cp="${p[0]}">คัดลอกคำสั่ง</button></div>`).join('');
+$$('[data-cp]').forEach(b=>b.onclick=()=>copy(PR.find(p=>p[0]===b.dataset.cp)[3]));
+$$('[data-ai]').forEach(b=>b.onclick=()=>{go('ai','aib');setTimeout(()=>{const c=$('pc-'+b.dataset.ai);if(c){c.scrollIntoView({block:'center'});c.style.outline='3px solid var(--mark)';setTimeout(()=>c.style.outline='',1800)}},50)});
+S.log=S.log||[['','','','','']];
+const LH=['วันที่','โปรแกรม AI','ถาม/สั่งว่าอะไร (โดยย่อ)','นำคำตอบไปใช้ส่วนไหน อย่างไร','ตรวจกับแหล่งใด'];
+function logT(){$('logT').innerHTML='<tr>'+LH.map(h=>`<th>${h}</th>`).join('')+'<th></th></tr>'+S.log.map((r,i)=>'<tr>'+r.map((c,j)=>`<td><textarea data-r="${i}" data-c="${j}" rows="2" aria-label="${LH[j]}">${esc(c)}</textarea></td>`).join('')+`<td><button class="btn alt" type="button" data-dl="${i}" style="padding:2px 8px">ลบ</button></td></tr>`).join('');
+ $$('#logT textarea').forEach(t=>t.oninput=()=>{S.log[+t.dataset.r][+t.dataset.c]=t.value;save()});
+ $$('#logT [data-dl]').forEach(b=>b.onclick=()=>{S.log.splice(+b.dataset.dl,1);if(!S.log.length)S.log.push(['','','','','']);save();logT()})}
+$('logAdd').onclick=()=>{S.log.push(['','','','','']);save();logT()};
+$('logCopy').onclick=()=>{const rows=S.log.filter(r=>r.some(Boolean));copy('ภาคผนวก บันทึกการใช้ปัญญาประดิษฐ์ (AI)\n'+[LH,...rows].map(r=>r.join('\t')).join('\n'),'<h2>ภาคผนวก บันทึกการใช้ปัญญาประดิษฐ์ (AI)</h2><table border="1" cellpadding="4" style="border-collapse:collapse"><tr>'+LH.map(h=>`<th>${h}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+r.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('')+'</table>')};
+logT();
+
 /* ---------- ความก้าวหน้า ---------- */
 function prog(){const tot=CH.reduce((a,c)=>a+wc(S[c[0]]),0);
  const u1=[...[0,1,2,3,4].map(i=>!!S['u1a'+(i+1)]),LQ.filter((_,i)=>S['lq'+i]===1).length>=4,[1,2,3,4,5].filter(i=>S['tp'+i]).length>=4,(S._ol||0)>=5];
@@ -495,5 +608,96 @@ function refresh(){outline();const t=wcPanel();front();autoRev(t);poster();speec
 refresh();progress();
 const h=(location.hash||'').slice(1);go(VIEWS.includes(h)?h:(S.view&&S.view!=='home'&&!h?'home':'home'));
 window.addEventListener('hashchange',()=>{const x=location.hash.slice(1);if(VIEWS.includes(x))go(x)});
+window.IS2={S:()=>S,LK,ACT,go,wc,prog,CH,esc,toast,copy};
 })();
 </script>
+<script>
+/* ===== บัญชีผู้ใช้และบันทึกขึ้นระบบ (Firebase) ===== */
+(function(){
+const $=id=>document.getElementById(id),I=window.IS2,esc=I.esc;
+const DOM='students.is2wpp.app';let DB=null,U=null,ME=null,TEACHER=false,timer=null,lastSync=null;
+const acct=$('acct');
+function chip(){if(!DB){acct.innerHTML='<span class="sync">งานเก็บในเครื่องนี้</span><button type="button" class="pri" id="inBtn">เข้าสู่ระบบ</button>';$('inBtn').onclick=()=>{if(DB){$('loginM').hidden=false;return}I.toast(NOCFG||'กำลังเชื่อมต่อระบบ ลองอีกครั้งใน 2–3 วินาที')};return}
+ if(!U){acct.innerHTML='<span class="sync">ยังไม่ได้เข้าสู่ระบบ · งานเก็บในเครื่องนี้</span><button type="button" class="pri" id="inBtn">เข้าสู่ระบบ</button>';$('inBtn').onclick=()=>{$('loginM').hidden=false;$('lgId').focus()};return}
+ const who=TEACHER?'ครู':(ME?ME.name.split(' ').slice(-2).join(' '):'');
+ acct.innerHTML=`<span class="who">${esc(who)}</span><span class="sync" id="syncS">${TEACHER?'':lastSync?'บันทึกขึ้นระบบแล้ว '+lastSync:'เชื่อมต่อแล้ว'}</span><button type="button" id="outBtn">ออกจากระบบ</button>`;$('outBtn').onclick=logout}
+function load(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+let NOCFG='';
+async function init(){chip();let cfg=null;
+ for(const u of ['config.json','/math-m1/config.json']){try{const r=await fetch(u,{cache:'no-store'});if(r.ok){const j=await r.json();if(j&&j.firebase&&j.firebase.apiKey){cfg=j.firebase;break}}}catch(e){}}
+ if(!cfg){NOCFG=location.protocol==='file:'||!/github\.io$/.test(location.hostname)?'หน้านี้เป็นหน้าพรีวิว ระบบเข้าสู่ระบบใช้ได้บนเว็บจริง mathdevth.github.io/is-m2/':'ยังเชื่อมต่อ Firebase ไม่ได้: ไม่พบค่า firebase ใน config.json ของ is-m2 และของ math-m1';chip();return}
+ const v='https://cdn.jsdelivr.net/npm/firebase@10.12.2/';
+ try{await load(v+'firebase-app-compat.js');await load(v+'firebase-auth-compat.js');await load(v+'firebase-firestore-compat.js')}catch(e){return}
+ firebase.initializeApp(cfg);const fs=firebase.firestore();
+ DB={auth:firebase.auth(),fs,ts:()=>firebase.firestore.FieldValue.serverTimestamp(),doc:p=>fs.doc(p)};
+ chip();DB.auth.onAuthStateChanged(onUser)}
+async function onUser(u){U=u;ME=null;TEACHER=false;$('navT').hidden=true;
+ if(!u){if(I.ACT){try{localStorage.removeItem('is2active')}catch(e){}location.reload();return}chip();return}
+ TEACHER=(await DB.doc('teachers/'+u.uid).get().catch(()=>null))?.exists||false;
+ if(TEACHER){$('navT').hidden=false;chip();if(location.hash==='#teacher')I.go('teacher');return}
+ const d=await DB.doc('is2students/'+u.uid).get().catch(()=>null);ME=d&&d.exists?d.data():null;
+ if(!ME){acct.innerHTML='<span class="sync no">ไม่พบข้อมูลนักเรียน ติดต่อครู</span><button type="button" id="outBtn">ออกจากระบบ</button>';$('outBtn').onclick=logout;return}
+ if(I.ACT!==u.uid){ /* เพิ่งเข้าสู่ระบบในเครื่องนี้: ดึงงานจากระบบ */
+  let data=null;try{const w=await DB.doc('is2work/'+u.uid).get();if(w.exists)data=w.data().data}catch(e){}
+  if(!data){try{data=localStorage.getItem('is2studio')}catch(e){}} /* บัญชีใหม่: ย้ายงานที่ทำไว้ก่อนเข้าสู่ระบบ */
+  try{localStorage.setItem('is2studio_'+u.uid,data||'{}');localStorage.setItem('is2active',u.uid);localStorage.removeItem('is2studio')}catch(e){}
+  location.reload();return}
+ window.IS2push=()=>{clearTimeout(timer);const s=$('syncS');if(s)s.textContent='กำลังบันทึก…';timer=setTimeout(push,1500)};
+ chip()}
+async function push(){if(!U||!ME)return;const S=I.S(),p=I.prog();
+ const clean={...S};delete clean.view;
+ try{await DB.doc('is2work/'+U.uid).set({uid:U.uid,sid:ME.sid,name:ME.name,cls:ME.cls,no:ME.no||'',data:JSON.stringify(clean),words:p.tot,refs:(S.refs||[]).length,
+   u1:p.u1.filter(Boolean).length+'/'+p.u1.length,u2:p.u2.filter(Boolean).length+'/'+p.u2.length,u3:p.u3.filter(Boolean).length+'/'+p.u3.length,title:S['o-title']||'',updated:DB.ts()});
+  lastSync=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});const s=$('syncS');if(s)s.textContent='บันทึกขึ้นระบบแล้ว '+lastSync;return true}
+ catch(e){const s=$('syncS');if(s)s.innerHTML='<span class="no">บันทึกขึ้นระบบไม่สำเร็จ งานยังอยู่ในเครื่อง</span>';return false}}
+async function logout(){let ok=true;if(ME){clearTimeout(timer);ok=await push()}try{localStorage.removeItem('is2active');if(U&&ok)localStorage.removeItem('is2studio_'+U.uid)}catch(e){}await DB.auth.signOut();location.hash='';location.reload()}
+window.addEventListener('beforeunload',()=>{if(timer){clearTimeout(timer);push()}});
+/* ---------- ฟอร์มเข้าสู่ระบบ ---------- */
+$('lgX').onclick=()=>$('loginM').hidden=true;
+$('loginF').addEventListener('submit',async e=>{e.preventDefault();const id=$('lgId').value.trim(),pw=$('lgPw').value;const em=id.includes('@')?id:`${id.toLowerCase()}@${DOM}`;
+ $('lgGo').disabled=true;$('lgErr').hidden=true;
+ try{await DB.auth.signInWithEmailAndPassword(em,pw);$('loginM').hidden=true}catch(err){$('lgErr').hidden=false;$('lgErr').textContent=/wrong-password|invalid-credential|user-not-found|invalid-login/.test(err.code||'')?'เลขประจำตัวหรือรหัสไม่ถูกต้อง':/too-many/.test(err.code||'')?'ลองผิดหลายครั้ง รอสักครู่แล้วลองใหม่':'เข้าสู่ระบบไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วลองใหม่'}
+ $('lgGo').disabled=false});
+/* ---------- ห้องครู ---------- */
+const tt=[...document.querySelectorAll('#tTabs button')];tt.forEach(b=>b.onclick=()=>{tt.forEach(x=>x.setAttribute('aria-selected',x===b));b.dataset.tt==='list'?tList():tNew()});
+$('navT').addEventListener('click',()=>{if(TEACHER)tList()});
+const td=t=>t&&t.toDate?t.toDate().toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}):'–';
+function csvCopy(rows){I.copy(rows.map(r=>r.map(c=>String(c??'').replace(/\t|\n/g,' ')).join('\t')).join('\n'))}
+async function tList(){const B=$('tBody');if(!TEACHER){B.innerHTML='<p class="note">เข้าสู่ระบบด้วยบัญชีครูก่อน</p>';return}B.innerHTML='<p class="note">กำลังโหลด…</p>';
+ let st=[],wk=[];try{st=(await DB.fs.collection('is2students').get()).docs.map(d=>({id:d.id,...d.data()}));wk=(await DB.fs.collection('is2work').get()).docs.map(d=>({id:d.id,...d.data()}))}catch(e){B.innerHTML='<p class="no">โหลดไม่ได้ ตรวจกฎ Firestore ของ is2students และ is2work</p>';return}
+ const W=Object.fromEntries(wk.map(w=>[w.id,w]));const cls=[...new Set(st.map(x=>x.cls))].sort();let f='';
+ const draw=()=>{const r=st.filter(x=>!f||x.cls===f).sort((a,b)=>String(a.cls).localeCompare(String(b.cls))||(+a.no||0)-(+b.no||0));
+  B.innerHTML=`<div class="row" style="margin-bottom:10px"><select id="tCls" class="in" style="width:auto"><option value="">ทุกห้อง (${st.length} คน)</option>${cls.map(c=>`<option ${c===f?'selected':''}>${esc(c)}</option>`).join('')}</select><button class="btn alt" type="button" id="tCp">คัดลอกตารางไปวาง Excel</button></div>
+  <div class="tw2"><table class="ttab"><tr><th>ชั้น</th><th>เลขที่</th><th>ชื่อ</th><th>ชื่อเรื่อง</th><th>คำ</th><th>อ้างอิง</th><th>ห้อง 1</th><th>ห้อง 2</th><th>ห้อง 3</th><th>บันทึกล่าสุด</th><th></th></tr>${r.map(x=>{const w=W[x.id]||{};return`<tr><td>${esc(x.cls)}</td><td class="n">${esc(x.no)}</td><td>${esc(x.name)}</td><td>${esc(w.title||'–')}</td><td class="n">${w.words??0}</td><td class="n">${w.refs??0}</td><td>${w.u1||'–'}</td><td>${w.u2||'–'}</td><td>${w.u3||'–'}</td><td>${td(w.updated)}</td><td>${w.data?`<button class="btn alt" type="button" data-v="${x.id}" style="padding:2px 10px">ดูงาน</button>`:''}</td></tr>`}).join('')}</table></div>`;
+  $('tCls').onchange=e=>{f=e.target.value;draw()};
+  $('tCp').onclick=()=>csvCopy([['ชั้น','เลขที่','เลขประจำตัว','ชื่อ','ชื่อเรื่อง','จำนวนคำ','อ้างอิง','ห้อง1','ห้อง2','ห้อง3','บันทึกล่าสุด'],...r.map(x=>{const w=W[x.id]||{};return[x.cls,x.no,x.sid,x.name,w.title,w.words??0,w.refs??0,w.u1,w.u2,w.u3,td(w.updated)]})]);
+  B.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>view(st.find(x=>x.id===b.dataset.v),W[b.dataset.v]))};draw()}
+function view(s,w){let d={};try{d=JSON.parse(w.data)}catch(e){}
+ const sec=(t,v)=>v&&String(v).trim()?`<h4>${t}</h4><div>${esc(v)}</div>`:'';
+ const log=(d.log||[]).filter(r=>r.some(Boolean));
+ $('vmT').textContent=`${s.name} · ${s.cls} เลขที่ ${s.no}`;
+ $('vmB').innerHTML=`<h3>${esc(d['o-title']||'(ยังไม่ตั้งชื่อเรื่อง)')}</h3><p class="note">${(w.words||0).toLocaleString('th-TH')} คำ · อ้างอิง ${w.refs||0} รายการ</p>`+
+  sec('สมาชิกกลุ่ม',d['o-mem'])+sec('วัตถุประสงค์',d['o-obj'])+sec('ขอบเขต',d['o-scope'])+sec('วิธีการศึกษา',d['o-how'])+
+  I.CH.map(c=>sec(`${c[1]} (${I.wc(d[c[0]])} คำ)`,d[c[0]])).join('')+
+  ((d.refs||[]).length?`<h4>เอกสารอ้างอิง</h4>${d.refs.map(r=>`<div>${r.html}</div>`).join('')}`:'')+
+  sec('คำนำ',d['pf-text'])+sec('โพสเตอร์: สิ่งที่ค้นพบ',d['ps-3'])+sec('บทพูด',[d['sp-o'],d['sp-b'],d['sp-c']].filter(Boolean).join('\n\n'))+
+  (log.length?`<h4>บันทึกการใช้ AI</h4>${log.map(r=>`<div>• ${r.map(esc).join(' | ')}</div>`).join('')}`:'')+sec('หลักฐานการเผยแพร่',d['pub-ev'])+sec('สะท้อนคิด',d['pub-ref']);
+ $('viewM').hidden=false}
+$('vmX').onclick=()=>$('viewM').hidden=true;
+function tNew(){const B=$('tBody');B.innerHTML=`<div class="card stack"><p>วางรายชื่อจาก Excel หรือ Google Sheets บรรทัดละคน เรียงคอลัมน์ <b>เลขประจำตัว, ชื่อ–สกุล, ชั้น, เลขที่</b> ระบบสุ่มรหัสให้แต่ละคน</p>
+ <textarea id="nR" style="min-height:160px" placeholder="23456	เด็กหญิงตัวอย่าง ใจดี	2/1	5"></textarea><div class="row"><button class="btn tl2" type="button" id="nGo">สร้างบัญชี</button><span class="note" id="nM"></span></div><div id="nOut"></div></div>`;
+ $('nGo').onclick=async()=>{const rows=$('nR').value.split(/\n/).map(l=>l.split(/\t|,/).map(x=>x.trim())).filter(r=>r[0]&&r[1]);if(!rows.length){$('nM').textContent='ยังไม่มีรายชื่อ';return}
+  $('nGo').disabled=true;const ok=[],bad=[],al='abcdefghjkmnpqrstuvwxyz23456789';
+  const sec=firebase.apps.find(a=>a.name==='sec')||firebase.initializeApp(firebase.app().options,'sec');
+  for(const [sid,name,cls,no] of rows){const pw=[...crypto.getRandomValues(new Uint32Array(8))].map(v=>al[v%al.length]).join('');$('nM').textContent=`กำลังสร้าง ${ok.length+bad.length+1}/${rows.length}…`;
+   try{const c=await sec.auth().createUserWithEmailAndPassword(`${sid.toLowerCase()}@${DOM}`,pw);const uid=c.user.uid;await sec.auth().signOut();
+    await DB.doc('is2students/'+uid).set({sid,name,cls:cls||'',no:no||'',created:DB.ts()});ok.push({sid,name,cls,no,pw})}
+   catch(e){bad.push(`${sid} ${name}: ${/email-already/.test(e.code||'')?'มีบัญชีอยู่แล้ว':(e.code||e.message)}`)}}
+  $('nGo').disabled=false;$('nM').textContent=`สร้างสำเร็จ ${ok.length} คน`+(bad.length?` · ไม่สำเร็จ ${bad.length} คน: ${bad.join(' / ')}`:'');
+  $('nOut').innerHTML=ok.length?`<div class="row"><button class="btn alt" type="button" id="nCp">คัดลอกรายชื่อและรหัส</button><span class="note no">รหัสแสดงครั้งนี้ครั้งเดียว ระบบไม่เก็บรหัสไว้ คัดลอกเก็บก่อนออกจากหน้านี้</span></div><div class="slips" style="margin-top:10px">${ok.map(x=>`<div class="slip"><b>${esc(x.name)}</b><br>ชั้น ${esc(x.cls)} เลขที่ ${esc(x.no)}<br>เลขประจำตัว: <b>${esc(x.sid)}</b><br>รหัส: <b class="pw">${x.pw}</b></div>`).join('')}</div>`:'';
+  if(ok.length)$('nCp').onclick=()=>csvCopy([['เลขประจำตัว','ชื่อ','ชั้น','เลขที่','รหัส'],...ok.map(x=>[x.sid,x.name,x.cls,x.no,x.pw])])}}
+init();
+})();
+</script>
+</body>
+</html>
